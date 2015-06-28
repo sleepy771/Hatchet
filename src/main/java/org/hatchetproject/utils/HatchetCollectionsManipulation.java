@@ -30,4 +30,12 @@ public class HatchetCollectionsManipulation {
         map.putAll(toBeMerged);
         return map;
     }
+
+    public static <T> boolean isIntersectionEmpty(Collection<T> c1, Collection<T> c2) {
+        for (T element : c2) {
+            if (c1.contains(element))
+                return false;
+        }
+        return true;
+    }
 }

@@ -2,9 +2,6 @@ package org.hatchetproject.manager;
 
 import org.hatchetproject.exceptions.ManagerException;
 
-/**
- * Created by filip on 6/27/15.
- */
 public abstract class DefaultAbstractManager<KEY, ELEMENT> extends AbstractManager<KEY, ELEMENT> {
 
     @Override

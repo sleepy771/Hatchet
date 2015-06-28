@@ -4,9 +4,7 @@ import org.hatchetproject.value_management.ValueCast;
 
 import java.util.Set;
 
-/**
- * Created by filip on 6/28/15.
- */
+
 public interface Scheme {
     boolean canAssign(Signature signature);
 
