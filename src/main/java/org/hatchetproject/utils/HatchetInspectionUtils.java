@@ -47,4 +47,19 @@ public class HatchetInspectionUtils {
     public static boolean isAccessibleSetter(Method method) {
         return isPublic(method) && isSetter(method);
     }
+
+    public static boolean isEmpty(String name) {
+        return name == null || name.trim().isEmpty();
+    }
+
+    public static String getGSetterName(String name) {
+        name = name.trim();
+        String trimmedTail = name.substring(4);
+        char leadingCharacter = name.charAt(3);
+        return Character.toLowerCase(leadingCharacter) + trimmedTail;
+    }
+
+    public static boolean isValidPropertyName(String name) {
+        return !isEmpty(name) && name.matches("^-|([a-zA-Z][\\w@#$_\\-]*)$");
+    }
 }

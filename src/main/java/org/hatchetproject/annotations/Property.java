@@ -17,7 +17,7 @@ public @interface Property {
 
     Class type() default AsSelf.class;
 
-    Class<? extends ValueCast> handler() default DoNothing.class;
+    Class<? extends ValueCast> caster() default DoNothing.class;
 
     int index() default -1;
 }
