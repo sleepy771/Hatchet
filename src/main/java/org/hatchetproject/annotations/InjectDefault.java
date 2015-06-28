@@ -1,6 +1,6 @@
 package org.hatchetproject.annotations;
 
-import org.hatchetproject.reflection.constants.DefaultClass;
+import org.hatchetproject.reflection.constants.AsSelf;
 import org.hatchetproject.reflection.constants.PreviousValue;
 
 import java.lang.annotation.ElementType;
@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 public @interface InjectDefault {
     String filePath() default "-";
     String key() default "-";
-    Class type() default DefaultClass.class;
+    Class type() default AsSelf.class;
     int index() default -1;
     Class injectByClass() default PreviousValue.class;
 }

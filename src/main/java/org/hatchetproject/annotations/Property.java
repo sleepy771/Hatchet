@@ -1,6 +1,6 @@
 package org.hatchetproject.annotations;
 
-import org.hatchetproject.reflection.constants.DefaultClass;
+import org.hatchetproject.reflection.constants.AsSelf;
 import org.hatchetproject.value_management.DoNothing;
 import org.hatchetproject.value_management.ValueCast;
 
@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 public @interface Property {
     String name() default "-";
 
-    Class type() default DefaultClass.class;
+    Class type() default AsSelf.class;
 
     Class<? extends ValueCast> handler() default DoNothing.class;
 
