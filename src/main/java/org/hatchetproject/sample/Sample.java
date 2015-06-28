@@ -6,9 +6,6 @@ import org.hatchetproject.annotations.Properties;
 import org.hatchetproject.annotations.Property;
 import org.hatchetproject.reflection.constants.Nothing;
 
-/**
- * Created by filip on 6/28/15.
- */
 public class Sample {
 
     private String name;
@@ -23,8 +20,8 @@ public class Sample {
     public String info;
 
     @InjectMultiple({
-            @InjectDefault(index = 1, injectByClass = Nothing.class),
-            @InjectDefault(index = 2, injectByClass = Nothing.class)
+            @InjectDefault(injectByClass = Nothing.class),
+            @InjectDefault(injectByClass = Nothing.class)
     })
     @Property(name = "name", index = 0)
     public Sample(String name, int age, String info) {

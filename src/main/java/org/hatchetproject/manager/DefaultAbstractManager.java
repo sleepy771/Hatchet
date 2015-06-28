@@ -27,11 +27,11 @@ public abstract class DefaultAbstractManager<KEY, ELEMENT> extends AbstractManag
         try {
             ELEMENT element = getDirectly(key);
             if (element == null) {
-                throw new ManagerException("Undefined key");
+                throw new ManagerException("Undefined uid");
             }
             return element;
         } catch (NullPointerException e) {
-            throw new ManagerException("Invalid key", e);
+            throw new ManagerException("Invalid uid", e);
         }
     }
 
