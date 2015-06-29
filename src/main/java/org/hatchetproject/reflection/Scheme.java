@@ -1,11 +1,12 @@
 package org.hatchetproject.reflection;
 
+import org.hatchetproject.manager.memory.Releasable;
 import org.hatchetproject.value_management.ValueCast;
 
 import java.util.Set;
 
 
-public interface Scheme {
+public interface Scheme extends Releasable, Classy {
     boolean canAssign(Signature signature);
 
     boolean isValidType(Signature signature, Class value);

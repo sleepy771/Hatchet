@@ -135,7 +135,7 @@ public abstract class TimeoutManager<KEY, RELEASABLE extends Releasable> impleme
     private ReleaseManager releaseManager;
     private boolean freeWasCalled;
 
-    private TimeoutManager() {
+    protected TimeoutManager() {
         timer = new Timer(true);
         releasableMap = new HashMap<>();
         timer.scheduleAtFixedRate(task, 0, PERIOD);
@@ -210,7 +210,7 @@ public abstract class TimeoutManager<KEY, RELEASABLE extends Releasable> impleme
             }
         }
         if (releasable.isReleased()) {
-            LOGGER.info("Releasable for class:" + keyName(key)
+            LOGGER.info("Releasable for class:" + toStringKey(key)
                     + " was released and is not going to be registered");
             return;
         }
@@ -218,11 +218,11 @@ public abstract class TimeoutManager<KEY, RELEASABLE extends Releasable> impleme
         if (!(registered == null || registered.isReleased()) && releasable.equals(registered)) {
             releasable.free();
         } else {
-            LOGGER.debug("Instance of class: " + keyName(key) + " is not registered!");
+            LOGGER.debug("Instance of class: " + toStringKey(key) + " is not registered!");
         }
     }
 
-    protected abstract String keyName(KEY key);
+    protected abstract String toStringKey(KEY key);
 
     protected final RELEASABLE getDirectly(KEY key) {
         TimeoutReleasableImpl<RELEASABLE> timeoutReleasable = releasableMap.get(key);
@@ -238,6 +238,8 @@ public abstract class TimeoutManager<KEY, RELEASABLE extends Releasable> impleme
     }
 
     protected abstract String toStringElement(RELEASABLE releasable);
+
+    protected abstract void postRelease();
 
     public void register(RELEASABLE releasable, long timeout) throws ManagerException {
         if (releasable == null) {
@@ -324,6 +326,7 @@ public abstract class TimeoutManager<KEY, RELEASABLE extends Releasable> impleme
         releasableMap.clear();
         releasableMap = null;
         freeWasCalled = true;
+        postRelease();
     }
 
     @Override
