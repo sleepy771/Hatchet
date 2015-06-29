@@ -1,5 +1,6 @@
 package org.hatchetproject.manager.memory;
 
+import org.apache.log4j.Logger;
 import org.hatchetproject.exceptions.ManagerException;
 import org.hatchetproject.manager.ManagerEntry;
 
@@ -11,10 +12,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * Created by filip on 6/29/15.
- */
-public class TimeoutManager extends TimerTask implements ReleaseManager {
+
+public class TimeoutManager implements ReleaseManager {
 
     private static class TimeoutReleasableImpl implements Releasable {
 
@@ -22,8 +21,18 @@ public class TimeoutManager extends TimerTask implements ReleaseManager {
         private long timeout;
         private long lastAccess;
 
+        private TimeoutReleasableImpl(Releasable releasable, long timeout) {
+            this.lastAccess = System.currentTimeMillis();
+            this.timeout = timeout;
+            this.releasable = releasable;
+        }
+
         public Releasable access() {
-            lastAccess = System.currentTimeMillis();
+            updateAccessTime();
+            return releasable;
+        }
+
+        Releasable getReleasable() {
             return releasable;
         }
 
@@ -42,7 +51,12 @@ public class TimeoutManager extends TimerTask implements ReleaseManager {
         public void setTimeout(long timeout) {
             if (timeout > 0) {
                 this.timeout = timeout;
+                updateAccessTime();
             }
+        }
+
+        private void updateAccessTime() {
+            this.lastAccess = System.currentTimeMillis();
         }
 
         public long getTimeout() {
@@ -53,7 +67,7 @@ public class TimeoutManager extends TimerTask implements ReleaseManager {
             return lastAccess;
         }
 
-        public long planedReleaseAfter() {
+        public long getPlanedReleaseAfter() {
             return timeout + lastAccess;
         }
 
@@ -74,24 +88,37 @@ public class TimeoutManager extends TimerTask implements ReleaseManager {
         }
     }
 
+    private TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+            for (TimeoutReleasableImpl releasable : TimeoutManager.this.releasableMap.values()) {
+                long time = System.currentTimeMillis();
+                if (releasable.getPlanedReleaseAfter() >= time) {
+                    // TODO FIX release of TimeoutManager.this
+                    releasable.free();
+                    if (releasable.getReleasable().equals(TimeoutManager.this))
+                        break;
+                }
+            }
+        }
+    };
+
+    private static Logger LOGGER = Logger.getLogger(TimeoutManager.class);
 
     public final static long TIMEOUT = 20000;
     private final static long PERIOD = 10000;
 
     private static TimeoutManager INSTANCE;
     private Timer timer;
-    private long period = PERIOD;
+    private long period;
     private Map<Class<? extends Releasable>, TimeoutReleasableImpl> releasableMap;
 
-    public TimeoutManager(long period, long timeout) {
-        timer = new Timer();
-        timer.scheduleAtFixedRate(this, 0, period);
+    private TimeoutManager() {
+        timer = new Timer(true);
         releasableMap = new HashMap<>();
-
-    }
-
-    public TimeoutManager() {
-        this(PERIOD, TIMEOUT);
+        releasableMap.put(getOriginalReleasable(this), new TimeoutReleasableImpl(this, TIMEOUT));
+        this.period = PERIOD;
+        timer.scheduleAtFixedRate(task, 0, PERIOD);
     }
 
     @Override
@@ -101,17 +128,68 @@ public class TimeoutManager extends TimerTask implements ReleaseManager {
 
     @Override
     public void release(Releasable releasable) {
+        if (releasable == null) {
+            LOGGER.debug("Trying to release null");
+            return;
+        }
+        release(getOriginalReleasable(releasable), releasable);
+    }
 
+    public long getReleasableTimeout(Class<? extends Releasable> clazz) {
+        if (!releasableMap.containsKey(clazz))
+            return -1;
+        return releasableMap.get(clazz).getTimeout();
+    }
+
+    public void setTimeout(Class<? extends Releasable> clazz, long timeout) {
+        if (!releasableMap.containsKey(clazz))
+            return;
+        releasableMap.get(clazz).setTimeout(timeout);
+    }
+
+    private Class<? extends Releasable> getOriginalReleasable(Releasable releasable) {
+        if (releasable == null || releasable.isReleased())
+            throw new IllegalArgumentException("Hipster instance alert: Was released, before it was cool!");
+        if (TimeoutReleasableImpl.class == releasable.getClass()) {
+            TimeoutReleasableImpl timeoutReleasable = (TimeoutReleasableImpl) releasable;
+            return timeoutReleasable.getReleasable().getClass();
+        }
+        return releasable.getClass();
+    }
+
+    public void setDereferencePeriod(long period) {
+        this.timer.cancel();
+        this.timer.purge();
+        this.timer = new Timer(true);
+        this.timer.scheduleAtFixedRate(task, (long) 0, period);
     }
 
     @Override
     public void release(Class clazz) {
-
+        release(clazz, releasableMap.get(clazz));
     }
 
     @Override
     public void release(Class clazz, Releasable releasable) {
-
+        if (clazz == null) {
+            if (releasable == null) {
+                LOGGER.debug("Trying to release unregistered object for class: null");
+                return;
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        if (releasable.isReleased()) {
+            LOGGER.info("Releasable for class:" + clazz.getName()
+                    + " was released and is not going to be registered");
+            return;
+        }
+        Releasable registered = releasableMap.get(clazz);
+        if (!(registered == null || registered.isReleased()) && releasable.equals(registered)) {
+            releasable.free();
+        } else {
+            LOGGER.debug("Instance of class: " + clazz.getName() + " is not registered!");
+        }
     }
 
     @Override
@@ -175,7 +253,6 @@ public class TimeoutManager extends TimerTask implements ReleaseManager {
 
     @Override
     public void setReleaseManager(ReleaseManager manager) {
-
     }
 
     public static TimeoutManager getInstance() {
@@ -183,10 +260,5 @@ public class TimeoutManager extends TimerTask implements ReleaseManager {
             INSTANCE = new TimeoutManager();
         }
         return INSTANCE;
-    }
-
-    @Override
-    public void run() {
-
     }
 }
