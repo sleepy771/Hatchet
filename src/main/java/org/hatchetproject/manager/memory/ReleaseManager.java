@@ -1,16 +1,19 @@
 package org.hatchetproject.manager.memory;
 
+import org.hatchetproject.exceptions.ManagerException;
 import org.hatchetproject.manager.Manager;
 
 /**
  * Created by filip on 6/29/15.
  */
-public interface ReleaseManager extends Manager<Class, Releasable>, Releasable {
+public interface ReleaseManager<KEY, RELEASABLE extends Releasable> extends Manager<KEY, RELEASABLE>, Releasable {
     void releaseAll();
 
-    void release(Releasable releasable);
+    void release(RELEASABLE releasable);
 
-    void release(Class clazz);
+    void release(KEY clazz);
 
-    void release(Class clazz, Releasable releasable);
+    void release(KEY clazz, RELEASABLE releasable);
+
+    RELEASABLE getOrCreate(KEY clazz) throws ManagerException;
 }

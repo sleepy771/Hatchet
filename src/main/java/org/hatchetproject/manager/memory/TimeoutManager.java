@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 import org.hatchetproject.exceptions.ManagerException;
 import org.hatchetproject.manager.ManagerEntry;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -13,26 +15,26 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class TimeoutManager implements ReleaseManager {
+public abstract class TimeoutManager<KEY, RELEASABLE extends Releasable> implements ReleaseManager<KEY, RELEASABLE> {
 
-    private static class TimeoutReleasableImpl implements Releasable {
+    private static class TimeoutReleasableImpl<RELEASABLE extends Releasable> implements Releasable {
 
-        private Releasable releasable;
+        private RELEASABLE releasable;
         private long timeout;
         private long lastAccess;
 
-        private TimeoutReleasableImpl(Releasable releasable, long timeout) {
+        private TimeoutReleasableImpl(RELEASABLE releasable, long timeout) {
             this.lastAccess = System.currentTimeMillis();
             this.timeout = timeout;
             this.releasable = releasable;
         }
 
-        public Releasable access() {
+        public RELEASABLE access() {
             updateAccessTime();
             return releasable;
         }
 
-        Releasable getReleasable() {
+        RELEASABLE getReleasable() {
             return releasable;
         }
 
@@ -73,8 +75,11 @@ public class TimeoutManager implements ReleaseManager {
 
         @Override
         public boolean isReleased() {
-            if (releasable == null)
+            if (releasable == null || releasable.isReleased())
+                runCleanup();
+            if (releasable == null) {
                 return true;
+            }
             if (releasable.isReleased()) {
                 partialRelease();
                 return true;
@@ -82,9 +87,28 @@ public class TimeoutManager implements ReleaseManager {
             return false;
         }
 
+        @SuppressWarnings("unchecked")
+        private void runCleanup() {
+            if (isAssigned()) {
+                getReleaseManager().unregister(getReleasable());
+            }
+        }
+
         @Override
         public void setReleaseManager(ReleaseManager manager) {
             releasable.setReleaseManager(manager);
+        }
+
+        @Override
+        public ReleaseManager getReleaseManager() {
+            if (releasable == null)
+                return null;
+            return releasable.getReleaseManager();
+        }
+
+        @Override
+        public boolean isAssigned() {
+            return releasable.isAssigned();
         }
     }
 
@@ -94,10 +118,7 @@ public class TimeoutManager implements ReleaseManager {
             for (TimeoutReleasableImpl releasable : TimeoutManager.this.releasableMap.values()) {
                 long time = System.currentTimeMillis();
                 if (releasable.getPlanedReleaseAfter() >= time) {
-                    // TODO FIX release of TimeoutManager.this
                     releasable.free();
-                    if (releasable.getReleasable().equals(TimeoutManager.this))
-                        break;
                 }
             }
         }
@@ -110,52 +131,61 @@ public class TimeoutManager implements ReleaseManager {
 
     private static TimeoutManager INSTANCE;
     private Timer timer;
-    private long period;
-    private Map<Class<? extends Releasable>, TimeoutReleasableImpl> releasableMap;
+    private Map<KEY, TimeoutReleasableImpl<RELEASABLE>> releasableMap;
+    private ReleaseManager releaseManager;
+    private boolean freeWasCalled;
 
     private TimeoutManager() {
         timer = new Timer(true);
         releasableMap = new HashMap<>();
-        releasableMap.put(getOriginalReleasable(this), new TimeoutReleasableImpl(this, TIMEOUT));
-        this.period = PERIOD;
         timer.scheduleAtFixedRate(task, 0, PERIOD);
+        freeWasCalled = false;
     }
 
     @Override
     public void releaseAll() {
-
+        for (KEY key : releasableMap.keySet()) {
+            releasableMap.get(key).free();
+        }
     }
 
     @Override
-    public void release(Releasable releasable) {
+    public boolean isReleased() {
+        return freeWasCalled;
+    }
+
+    @Override
+    public boolean isAssigned() {
+        return releaseManager == null;
+    }
+
+    @Override
+    public ReleaseManager getReleaseManager() {
+        return releaseManager;
+    }
+
+    @Override
+    public void release(RELEASABLE releasable) {
         if (releasable == null) {
             LOGGER.debug("Trying to release null");
             return;
         }
-        release(getOriginalReleasable(releasable), releasable);
+        release(getKey(releasable), releasable);
     }
 
-    public long getReleasableTimeout(Class<? extends Releasable> clazz) {
-        if (!releasableMap.containsKey(clazz))
+    public long getReleasableTimeout(KEY key) {
+        if (!releasableMap.containsKey(key))
             return -1;
-        return releasableMap.get(clazz).getTimeout();
+        return releasableMap.get(key).getTimeout();
     }
 
-    public void setTimeout(Class<? extends Releasable> clazz, long timeout) {
-        if (!releasableMap.containsKey(clazz))
+    public void setTimeout(KEY key, long timeout) {
+        if (!releasableMap.containsKey(key))
             return;
-        releasableMap.get(clazz).setTimeout(timeout);
+        releasableMap.get(key).setTimeout(timeout);
     }
 
-    private Class<? extends Releasable> getOriginalReleasable(Releasable releasable) {
-        if (releasable == null || releasable.isReleased())
-            throw new IllegalArgumentException("Hipster instance alert: Was released, before it was cool!");
-        if (TimeoutReleasableImpl.class == releasable.getClass()) {
-            TimeoutReleasableImpl timeoutReleasable = (TimeoutReleasableImpl) releasable;
-            return timeoutReleasable.getReleasable().getClass();
-        }
-        return releasable.getClass();
-    }
+    protected abstract KEY getKey(RELEASABLE releasable);
 
     public void setDereferencePeriod(long period) {
         this.timer.cancel();
@@ -165,13 +195,13 @@ public class TimeoutManager implements ReleaseManager {
     }
 
     @Override
-    public void release(Class clazz) {
-        release(clazz, releasableMap.get(clazz));
+    public void release(KEY key) {
+        release(key, getDirectly(key));
     }
 
     @Override
-    public void release(Class clazz, Releasable releasable) {
-        if (clazz == null) {
+    public void release(KEY key, RELEASABLE releasable) {
+        if (key == null) {
             if (releasable == null) {
                 LOGGER.debug("Trying to release unregistered object for class: null");
                 return;
@@ -180,85 +210,125 @@ public class TimeoutManager implements ReleaseManager {
             }
         }
         if (releasable.isReleased()) {
-            LOGGER.info("Releasable for class:" + clazz.getName()
+            LOGGER.info("Releasable for class:" + keyName(key)
                     + " was released and is not going to be registered");
             return;
         }
-        Releasable registered = releasableMap.get(clazz);
+        Releasable registered = getDirectly(key);
         if (!(registered == null || registered.isReleased()) && releasable.equals(registered)) {
             releasable.free();
         } else {
-            LOGGER.debug("Instance of class: " + clazz.getName() + " is not registered!");
+            LOGGER.debug("Instance of class: " + keyName(key) + " is not registered!");
+        }
+    }
+
+    protected abstract String keyName(KEY key);
+
+    protected final RELEASABLE getDirectly(KEY key) {
+        TimeoutReleasableImpl<RELEASABLE> timeoutReleasable = releasableMap.get(key);
+        if (timeoutReleasable != null && !timeoutReleasable.isReleased()) {
+            return timeoutReleasable.access();
+        }
+        return null;
+    }
+
+    @Override
+    public void register(RELEASABLE releasable) throws ManagerException {
+        register(releasable, TIMEOUT);
+    }
+
+    protected abstract String toStringElement(RELEASABLE releasable);
+
+    public void register(RELEASABLE releasable, long timeout) throws ManagerException {
+        if (releasable == null) {
+            throw new ManagerException("Null can not be registered");
+        }
+        if (isRegistered(releasable)) {
+            throw new ManagerException("Element " + toStringElement(releasable) + " already registered");
+        }
+        if (releasable.isAssigned()) {
+            throw new ManagerException("Can not register assigned element");
+        }
+        releasableMap.put(getKey(releasable), new TimeoutReleasableImpl<RELEASABLE>(releasable, timeout));
+        releasable.setReleaseManager(this);
+    }
+
+    @Override
+    public void unregister(RELEASABLE releasable) {
+        if (isRegistered(releasable)) {
+            releasableMap.remove(getKey(releasable), releasable);
         }
     }
 
     @Override
-    public void register(Releasable releasable) throws ManagerException {
-
-    }
-
-    public void register(Releasable releasable, long timeout) throws ManagerException {
-
-    }
-
-    @Override
-    public void unregister(Releasable releasable) {
-
+    public boolean isRegistered(RELEASABLE releasable) {
+        if (releasable == null)
+            return false;
+        KEY key = getKey(releasable);
+        return key != null && isRegistered(key, releasable);
     }
 
     @Override
-    public boolean isRegistered(Releasable releasable) {
-        return false;
+    public boolean isRegistered(KEY key, RELEASABLE releasable) {
+        if (key == null || releasable == null)
+            return false;
+        RELEASABLE registered = getDirectly(key);
+        return registered != null && !registered.isReleased() && registered.equals(releasable);
     }
 
     @Override
-    public boolean isRegistered(Class aClass, Releasable releasable) {
-        return false;
+    public boolean isKeyRegistered(KEY key) {
+        return key != null && getDirectly(key) != null;
     }
 
     @Override
-    public boolean isKeyRegistered(Class aClass) {
-        return false;
-    }
-
-    @Override
-    public Releasable get(Class aClass) throws ManagerException {
+    public RELEASABLE get(KEY key) throws ManagerException {
         return null;
     }
 
     @Override
-    public Set<Class> getRegisteredKeys() {
-        return null;
+    public RELEASABLE getOrCreate(KEY key) throws ManagerException {
+        RELEASABLE out = getDirectly(key);
+        if (out == null || out.isReleased()) {
+            out = create(key);
+            register(out);
+        }
+        return out;
     }
 
     @Override
-    public List<Releasable> getRegisteredElements() {
-        return null;
+    public Set<KEY> getRegisteredKeys() {
+        return Collections.unmodifiableSet(releasableMap.keySet());
     }
 
     @Override
-    public Iterator<ManagerEntry<Class, Releasable>> iterator() {
+    public List<RELEASABLE> getRegisteredElements() {
+        List<RELEASABLE> releasables = new ArrayList<>();
+        for (TimeoutReleasableImpl<RELEASABLE> releasable : releasableMap.values()) {
+            releasables.add(releasable.getReleasable());
+        }
+        return Collections.unmodifiableList(releasables);
+    }
+
+    @Override
+    public Iterator<ManagerEntry<KEY, RELEASABLE>> iterator() {
         return null;
     }
 
     @Override
     public void free() {
-
-    }
-
-    @Override
-    public boolean isReleased() {
-        return INSTANCE == null;
+        releaseAll();
+        timer.cancel();
+        timer.purge();
+        task = null;
+        releasableMap.clear();
+        releasableMap = null;
+        freeWasCalled = true;
     }
 
     @Override
     public void setReleaseManager(ReleaseManager manager) {
     }
 
-    public static TimeoutManager getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new TimeoutManager();
-        }
-        return INSTANCE;
-    }
+    protected abstract RELEASABLE create(KEY key) throws ManagerException;
 }

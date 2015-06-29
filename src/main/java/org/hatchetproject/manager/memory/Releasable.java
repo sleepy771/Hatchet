@@ -11,4 +11,8 @@ public interface Releasable {
     boolean isReleased();
 
     void setReleaseManager(ReleaseManager manager);
+
+    ReleaseManager getReleaseManager();
+
+    boolean isAssigned();
 }
