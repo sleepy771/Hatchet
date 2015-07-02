@@ -1,5 +1,6 @@
 package org.hatchetproject.reflection;
 
+import org.hatchetproject.annotations.Property;
 import org.hatchetproject.exceptions.PropertySetterException;
 
 public interface PropertySetter extends PropertyAccessor {

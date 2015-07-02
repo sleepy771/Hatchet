@@ -16,7 +16,8 @@ public class PropertyBuildersManager extends AbstractManager<Signature, Property
     }
 
     @Override
-    protected void postRegister(Signature signature, PropertyBuilder propertyBuilder) {
+    protected boolean postRegister(Signature signature, PropertyBuilder propertyBuilder) {
+        return true;
     }
 
     @Override
@@ -56,7 +57,7 @@ public class PropertyBuildersManager extends AbstractManager<Signature, Property
     public PropertyBuilder getOrCreate(Field field) {
         FieldSignature fieldSignature = new FieldSignature(field);
         if (!containsKey(fieldSignature)) {
-            silentRegister(fieldSignature, new PropertyBuilder());
+            //silentRegister(fieldSignature, new PropertyBuilder());
         }
         return getDirectly(fieldSignature);
     }

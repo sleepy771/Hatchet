@@ -20,12 +20,51 @@ public class PropertyBuilder {
     private Class propertyType;
     private String propertyName;
 
+    private PropertyAccessor accessor;
+
     private PropertySetter setter;
 
     private PropertyGetter getter;
 
-    private PropertyBuilder() {
+    private PropertyBuilder(Class propertyType, String propertyName) {
+        this.propertyName = propertyName;
+        this.propertyType = propertyType;
+    }
 
+    public PropertyBuilder setType(Class propertyType) {
+        if (propertyType != null)
+            this.propertyType = propertyType;
+        return this;
+    }
+
+    public PropertyBuilder setName(String name) {
+        if (!HatchetInspectionUtils.isEmpty(name))
+            this.propertyName = name;
+        return this;
+    }
+
+    public PropertyBuilder setSetter(PropertySetter setter) {
+        if (setter != null) {
+//            if (setter.getValueClass() != propertyType && setter.getCaster() == null)
+//                throw new IllegalArgumentException("Invalid"); // Change to property exception
+//            if (setter.getValueClass() != propertyType && setter.getCaster().getOutputType() != propertyType)
+//                throw new IllegalArgumentException("Invalid");
+            this.setter = setter;
+        }
+        return this;
+    }
+
+    public PropertyBuilder merge(PropertyBuilder builder) {
+        if (!(propertyType == builder.propertyType && propertyName.equals(builder.propertyName))) {
+            throw new IllegalArgumentException();
+        }
+        if (setter == null && builder.setter!= null || getter == null && builder.getter != null) {
+            if (setter == null)
+                setter = builder.setter;
+            if (getter == null)
+                getter = builder.getter;
+        }
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -59,7 +98,11 @@ public class PropertyBuilder {
         } else {
             type = field.getType();
         }
-        return null;
+        PropertyBuilder builder = new PropertyBuilder(type, name);
+
+        // todo create and assign setter
+
+        return builder;
     }
 
     static PropertyBuilder createProperty(Method method) {

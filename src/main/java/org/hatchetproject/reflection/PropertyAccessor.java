@@ -12,6 +12,4 @@ public interface PropertyAccessor {
     Class getValueClass();
 
     ValueCast getCaster();
-
-    IProperty getProperty();
 }
