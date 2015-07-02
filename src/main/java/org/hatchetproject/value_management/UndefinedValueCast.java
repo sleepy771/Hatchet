@@ -3,17 +3,17 @@ package org.hatchetproject.value_management;
 import org.hatchetproject.manager.memory.ReleaseManager;
 
 /**
- * Created by filip on 6/27/15.
+ * Created by filip on 7/2/15.
  */
-public class DoNothing implements ValueCast {
+public class UndefinedValueCast implements ValueCast {
 
-    private DoNothing() {
+    private UndefinedValueCast() {
         throw new UnsupportedOperationException("NOPE");
     }
 
     @Override
-    public Object cast(Object o) {
-        return o;
+    public Object cast(Object o) throws ClassCastException {
+        return null;
     }
 
     @Override

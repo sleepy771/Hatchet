@@ -2,6 +2,7 @@ package org.hatchetproject.annotations;
 
 import org.hatchetproject.reflection.constants.AsSelf;
 import org.hatchetproject.value_management.DoNothing;
+import org.hatchetproject.value_management.UndefinedValueCast;
 import org.hatchetproject.value_management.ValueCast;
 
 import java.lang.annotation.ElementType;
@@ -17,7 +18,7 @@ public @interface Property {
 
     Class type() default AsSelf.class;
 
-    Class<? extends ValueCast> caster() default DoNothing.class;
+    Class<? extends ValueCast> caster() default UndefinedValueCast.class;
 
     int index() default -1;
 }

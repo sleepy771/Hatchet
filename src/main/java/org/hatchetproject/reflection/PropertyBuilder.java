@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 import org.hatchetproject.annotations.Property;
 import org.hatchetproject.reflection.constants.AsSelf;
 import org.hatchetproject.utils.HatchetInspectionUtils;
+import org.hatchetproject.value_management.UndefinedValueCast;
+import org.hatchetproject.value_management.ValueCast;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -28,8 +30,9 @@ public class PropertyBuilder {
         String name = "-".equals(fieldProperty.name()) ? field.getName() : fieldProperty.name();
         Class type = null;
         if (fieldProperty.type() != AsSelf.class) {
-            if (fieldProperty.type().isAssignableFrom(field.getType()) || fieldProperty.caster() != null) {
-                // TODO create value manager, in order to obtain ValueCaster
+            if (fieldProperty.caster() == UndefinedValueCast.class) {
+                // TODO try to find one
+            } else {
             }
         } else {
             type = field.getType();
