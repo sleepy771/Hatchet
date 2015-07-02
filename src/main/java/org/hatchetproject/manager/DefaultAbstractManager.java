@@ -33,7 +33,8 @@ public abstract class DefaultAbstractManager<KEY, ELEMENT> extends AbstractManag
     }
 
     @Override
-    protected void postRegister(KEY key, ELEMENT element) {
+    protected boolean postRegister(KEY key, ELEMENT element) {
+        return true;
     }
 
     @Override

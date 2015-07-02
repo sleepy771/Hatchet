@@ -30,29 +30,4 @@ public class DoNothing implements ValueCast {
     public ValueCastSignature getSignature() {
         return null;
     }
-
-    @Override
-    public void free() {
-
-    }
-
-    @Override
-    public boolean isReleased() {
-        return false;
-    }
-
-    @Override
-    public void setReleaseManager(ReleaseManager manager) {
-
-    }
-
-    @Override
-    public ReleaseManager getReleaseManager() {
-        return null;
-    }
-
-    @Override
-    public boolean isAssigned() {
-        return false;
-    }
 }

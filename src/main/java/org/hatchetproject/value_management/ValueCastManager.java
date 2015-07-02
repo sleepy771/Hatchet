@@ -2,11 +2,21 @@ package org.hatchetproject.value_management;
 
 import org.apache.log4j.Logger;
 import org.hatchetproject.exceptions.ManagerException;
-import org.hatchetproject.manager.AbstractManager;
 import org.hatchetproject.manager.DefaultAbstractManager;
-import org.hatchetproject.manager.memory.TimeoutManager;
+
+import java.util.Map;
 
 public class ValueCastManager extends DefaultAbstractManager<ValueCastSignature, ValueCast> {
+
+    private static Logger LOGGER = Logger.getLogger(ValueCastManager.class);
+
+    private static ValueCastManager INSTANCE;
+
+    private Map<Class<? extends ValueCast>, ValueCast> castMap;
+
+    private ValueCastManager() {
+        super();
+    }
 
     @Override
     protected ValueCastSignature getKeyForElement(ValueCast valueCast) {
@@ -14,20 +24,46 @@ public class ValueCastManager extends DefaultAbstractManager<ValueCastSignature,
     }
 
     @Override
-    protected void postRegister(ValueCastSignature valueCastSignature, ValueCast valueCast) {
+    protected final boolean postRegister(ValueCastSignature signature, ValueCast cast) {
+        if (castMap.containsKey(cast.getClass()))
+            return false;
+        castMap.put(cast.getClass(), cast);
+        return true;
     }
 
     @Override
-    protected void postUnregister(ValueCastSignature valueCastSignature, ValueCast valueCast) {
+    public final void postUnregister(ValueCastSignature signature, ValueCast cast) {
+        castMap.remove(cast.getClass(), cast);
     }
 
-    @Override
-    protected String verboseKey(ValueCastSignature valueCastSignature) {
-        return valueCastSignature.toString();
+    public final ValueCast getOrCreate(Class<? extends ValueCast> clazz) throws ManagerException {
+        if (castMap.containsKey(clazz))
+            return castMap.get(clazz);
+        try {
+            ValueCast caster = clazz.newInstance();
+            register(caster);
+            return caster;
+        } catch (InstantiationException | IllegalAccessException e) {
+            LOGGER.error("Caste has not default constructor", e);
+            throw new ManagerException("Caster class has not default accessible constructor!", e);
+        }
     }
 
-    @Override
-    protected String verboseElement(ValueCast valueCast) {
-        return valueCast.toString();
+    public final boolean isRegisteredForKey(Class<? extends ValueCast> clazz) {
+        return clazz != null && castMap.containsKey(clazz);
+    }
+
+    public final boolean isRegistered(Class<? extends ValueCast> casterClass, ValueCast caster) {
+        if (casterClass == null || caster == null)
+            return false;
+        ValueCast registered = castMap.get(casterClass);
+        return registered.equals(caster);
+    }
+
+    public static ValueCastManager getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ValueCastManager();
+        }
+        return INSTANCE;
     }
 }

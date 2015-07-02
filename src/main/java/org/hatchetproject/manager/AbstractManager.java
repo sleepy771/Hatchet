@@ -33,7 +33,9 @@ public abstract class AbstractManager<KEY, ELEMENT> implements Manager<KEY, ELEM
         KEY key = getKeyForElement(element);
         if (!silentRegister(key, element))
             throw new ManagerException("Key [" + keyToString(key) + "] for element is already registered!");
-        postRegister(key, element);
+        if (!postRegister(key, element)) {
+            throw new ManagerException("Post register failed");
+        }
     }
 
     @Override
@@ -82,7 +84,7 @@ public abstract class AbstractManager<KEY, ELEMENT> implements Manager<KEY, ELEM
 
     protected abstract KEY getKeyForElement(ELEMENT element);
 
-    protected abstract void postRegister(KEY key, ELEMENT element);
+    protected abstract boolean postRegister(KEY key, ELEMENT element);
 
     protected abstract void postUnregister(KEY key, ELEMENT element);
 
