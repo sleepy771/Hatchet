@@ -5,4 +5,8 @@ package org.hatchetproject.reflection;
  */
 public interface IProperty {
     String getName();
+
+    Class getDeclaringClass();
+
+    Class getPropertyType();
 }
