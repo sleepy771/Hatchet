@@ -1,11 +1,16 @@
 package org.hatchetproject.utils;
 
 import com.sun.org.apache.xpath.internal.operations.Mod;
+import org.hatchetproject.reflection.ObjectMeta;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by filip on 6/28/15.
@@ -61,5 +66,20 @@ public class HatchetInspectionUtils {
 
     public static boolean isValidPropertyName(String name) {
         return !isEmpty(name) && name.matches("^-|([a-zA-Z][\\w@#$_\\-]*)$");
+    }
+
+    public static int getDistanceFromObject(Class clazz) {
+        if (clazz.isInterface())
+            return -1;
+        int k = 0;
+        while (clazz != Object.class) {
+            clazz = clazz.getSuperclass();
+            k++;
+        }
+        return k;
+    }
+
+    public static int getDistanceFromRoot(Class clazz) {
+        return null;
     }
 }

@@ -8,9 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-/**
- * Created by filip on 6/28/15.
- */
+
 public class PropertyBuildersManager extends AbstractManager<Signature, PropertyBuilder> {
     @Override
     protected Signature getKeyForElement(PropertyBuilder propertyBuilder) {

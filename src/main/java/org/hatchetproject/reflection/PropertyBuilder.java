@@ -8,9 +8,6 @@ import org.hatchetproject.utils.HatchetInspectionUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-/**
- * Created by filip on 6/28/15.
- */
 public class PropertyBuilder {
 
     private static Logger logger = Logger.getLogger(PropertyBuilder.class.getName());
