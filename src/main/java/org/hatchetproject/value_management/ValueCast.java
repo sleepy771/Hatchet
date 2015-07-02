@@ -9,4 +9,6 @@ public interface ValueCast<INPUT, OUTPUT> {
     Class<? extends INPUT> getInputType();
 
     ValueCastSignature getSignature();
+
+    ValueCast<OUTPUT, INPUT> reverseValueCast();
 }

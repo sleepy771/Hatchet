@@ -20,8 +20,6 @@ public class PropertyBuilder {
     private Class propertyType;
     private String propertyName;
 
-    private PropertyAccessor accessor;
-
     private PropertySetter setter;
 
     private PropertyGetter getter;
@@ -51,6 +49,12 @@ public class PropertyBuilder {
 //                throw new IllegalArgumentException("Invalid");
             this.setter = setter;
         }
+        return this;
+    }
+
+    public PropertyBuilder setGetter(PropertyGetter getter) {
+        if (getter != null)
+            this.getter = getter;
         return this;
     }
 
@@ -99,13 +103,15 @@ public class PropertyBuilder {
             type = field.getType();
         }
         PropertyBuilder builder = new PropertyBuilder(type, name);
-
-        // todo create and assign setter
-
+        builder.setGetter(new FieldPropertyGetter(field, caster));
+        builder.setSetter(new FieldPropertySetter(field, caster != null ? caster.reverseValueCast() : null));
         return builder;
     }
 
     static PropertyBuilder createProperty(Method method) {
+        Property property = method.getAnnotation(Property.class);
+        if (!HatchetInspectionUtils.isValidPropertyName(property.name()))
+            throw new IllegalArgumentException("Invalid property name");
         return null;
     }
 

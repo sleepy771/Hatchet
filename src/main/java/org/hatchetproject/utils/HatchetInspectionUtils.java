@@ -1,20 +1,10 @@
 package org.hatchetproject.utils;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
-import org.hatchetproject.reflection.ObjectMeta;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-/**
- * Created by filip on 6/28/15.
- */
 public class HatchetInspectionUtils {
 
     public static boolean isPublic(Method method) {
@@ -42,7 +32,7 @@ public class HatchetInspectionUtils {
     }
 
     public static boolean isSetter(Method method) {
-        return void.class == method.getReturnType() && method.getParameterCount() > 0;
+        return method.getParameterCount() > 0;
     }
 
     public static boolean isAccessibleGetter(Method method) {
@@ -57,25 +47,19 @@ public class HatchetInspectionUtils {
         return name == null || name.trim().isEmpty();
     }
 
-    public static String getGSetterName(String name) {
-        name = name.trim();
-        String trimmedTail = name.substring(4);
-        char leadingCharacter = name.charAt(3);
-        return Character.toLowerCase(leadingCharacter) + trimmedTail;
-    }
-
     public static boolean isValidPropertyName(String name) {
         return !isEmpty(name) && name.matches("^-|([a-zA-Z][\\w@#$_\\-]*)$");
     }
 
-    public static int getDistanceFromObject(Class clazz) {
-        if (clazz.isInterface())
-            return -1;
-        int k = 0;
-        while (clazz != Object.class) {
-            clazz = clazz.getSuperclass();
-            k++;
+    public static String createPropertyName(String methodName, String propertyName) {
+        if ("-".equals(propertyName)) {
+            if ((methodName.startsWith("set") || methodName.startsWith("get")) && methodName.length() > 3) {
+                return Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
+            }
+            return Character.toLowerCase(methodName.charAt(0)) + methodName.substring(1);
+        } else if (isValidPropertyName(propertyName)) {
+            return propertyName;
         }
-        return k;
+        throw new IllegalArgumentException("Wrong property name");
     }
 }

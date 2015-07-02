@@ -30,4 +30,9 @@ public class DoNothing implements ValueCast {
     public ValueCastSignature getSignature() {
         return null;
     }
+
+    @Override
+    public ValueCast reverseValueCast() {
+        return null;
+    }
 }

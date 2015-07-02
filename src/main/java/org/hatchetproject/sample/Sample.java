@@ -20,8 +20,8 @@ public class Sample {
     public String info;
 
     @InjectMultiple({
-            @InjectDefault(injectByClass = Nothing.class),
-            @InjectDefault(injectByClass = Nothing.class)
+            @InjectDefault(),
+            @InjectDefault()
     })
     @Property(name = "name", index = 0)
     public Sample(String name, int age, String info) {

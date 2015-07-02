@@ -32,27 +32,7 @@ public class UndefinedValueCast implements ValueCast {
     }
 
     @Override
-    public void free() {
-
-    }
-
-    @Override
-    public boolean isReleased() {
-        return false;
-    }
-
-    @Override
-    public void setReleaseManager(ReleaseManager manager) {
-
-    }
-
-    @Override
-    public ReleaseManager getReleaseManager() {
+    public ValueCast reverseValueCast() {
         return null;
-    }
-
-    @Override
-    public boolean isAssigned() {
-        return false;
     }
 }
