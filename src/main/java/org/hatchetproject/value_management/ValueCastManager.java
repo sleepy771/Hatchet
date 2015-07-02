@@ -2,47 +2,32 @@ package org.hatchetproject.value_management;
 
 import org.apache.log4j.Logger;
 import org.hatchetproject.exceptions.ManagerException;
+import org.hatchetproject.manager.AbstractManager;
+import org.hatchetproject.manager.DefaultAbstractManager;
 import org.hatchetproject.manager.memory.TimeoutManager;
 
-public class ValueCastManager extends TimeoutManager<Class<? extends ValueCast>, ValueCast> {
-
-    private static ValueCastManager INSTANCE;
-    private static Logger LOGGER = Logger.getLogger(ValueCastManager.class);
+public class ValueCastManager extends DefaultAbstractManager<ValueCastSignature, ValueCast> {
 
     @Override
-    protected Class<? extends ValueCast> getKey(ValueCast releasable) {
-        return releasable.getClass();
+    protected ValueCastSignature getKeyForElement(ValueCast valueCast) {
+        return valueCast.getSignature();
     }
 
     @Override
-    protected String toStringKey(Class<? extends ValueCast> aClass) {
-        return aClass.getName();
+    protected void postRegister(ValueCastSignature valueCastSignature, ValueCast valueCast) {
     }
 
     @Override
-    protected String toStringElement(ValueCast releasable) {
-        return releasable.toString();
+    protected void postUnregister(ValueCastSignature valueCastSignature, ValueCast valueCast) {
     }
 
     @Override
-    protected void postRelease() {
-        INSTANCE = null;
+    protected String verboseKey(ValueCastSignature valueCastSignature) {
+        return valueCastSignature.toString();
     }
 
     @Override
-    protected ValueCast create(Class<? extends ValueCast> aClass) throws ManagerException {
-        try{
-            return aClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            LOGGER.error(e);
-            throw new ManagerException("Instantiation error occurred: ", e);
-        }
-    }
-
-    public static ValueCastManager getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new ValueCastManager();
-        }
-        return INSTANCE;
+    protected String verboseElement(ValueCast valueCast) {
+        return valueCast.toString();
     }
 }

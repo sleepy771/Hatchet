@@ -78,8 +78,4 @@ public class HatchetInspectionUtils {
         }
         return k;
     }
-
-    public static int getDistanceFromRoot(Class clazz) {
-        return null;
-    }
 }

@@ -34,6 +34,9 @@ public class HatchetTree<T> implements Iterable<T> {
         private Node<T> parent;
         private T element;
 
+        private Integer rootDistance;
+
+
         Node(T element, Node<T> parent) {
             this.element = element;
             setParent(parent);
@@ -101,6 +104,33 @@ public class HatchetTree<T> implements Iterable<T> {
             Node<T> child = children.remove(idx);
             child.setParent(null);
             return child.get();
+        }
+
+        public int getRootDistance() {
+            if (rootDistance == null) {
+                if (isRoot())
+                    return 0;
+                else
+                    return parent.getRootDistance() + 1;
+            }
+            return rootDistance;
+        }
+
+        public boolean hasPrecalculatedRootDistance() {
+            return rootDistance != null;
+        }
+
+        public void calculateRootDistance() {
+            if (isRoot()) {
+                rootDistance = 0;
+                return;
+            }
+            Node<T> element = this;
+            int distance = 0;
+            while (element.parent != null || element.hasPrecalculatedRootDistance()) {
+                element = element.parent;
+                distance += element.hasPrecalculatedRootDistance() ? element.getRootDistance() + 1 : 1;
+            }
         }
 
         public boolean hasChildren() {
@@ -221,6 +251,12 @@ public class HatchetTree<T> implements Iterable<T> {
         for (Node<T> subNode : node) {
             mappingToNodes.remove(subNode.get());
         }
+    }
+
+    public int getDistanceFromRoot(T element) {
+        if (!mappingToNodes.containsKey(element))
+            return -1;
+        return mappingToNodes.get(element).getRootDistance();
     }
 
     public boolean contains(T node) {

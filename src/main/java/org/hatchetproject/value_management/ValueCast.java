@@ -11,4 +11,6 @@ public interface ValueCast<INPUT, OUTPUT> extends Releasable {
     Class<? extends OUTPUT> getOutputType();
 
     Class<? extends INPUT> getInputType();
+
+    ValueCastSignature getSignature();
 }
