@@ -3,6 +3,7 @@ package org.hatchetproject.reflection;
 import org.hatchetproject.manager.memory.Releasable;
 import org.hatchetproject.value_management.ValueCast;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,6 +36,12 @@ public interface Scheme extends Releasable, Classy {
     Set<Signature> getFieldProperties();
 
     Map<Signature, IProperty> getPropertyMap();
+
+    List<Class> getConstructorArguments();
+
+    Map<Integer, Object> getDefaultConstructorValues();
+
+    boolean hasDefaultConstructorValues();
 
     ValueGetter getGetter();
 

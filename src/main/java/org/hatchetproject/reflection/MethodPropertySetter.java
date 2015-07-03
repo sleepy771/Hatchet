@@ -1,5 +1,6 @@
 package org.hatchetproject.reflection;
 
+import org.hatchetproject.annotations.Property;
 import org.hatchetproject.exceptions.PropertyAccessorException;
 import org.hatchetproject.exceptions.PropertySetterException;
 import org.hatchetproject.value_management.ValueCast;
@@ -12,6 +13,7 @@ public class MethodPropertySetter extends PropertyAccessorBase implements Proper
 
     private Method method;
     private ValueCast caster;
+    private IProperty property;
 
     MethodPropertySetter(Method method, ValueCast caster) throws PropertyAccessorException {
         super(caster, AccessorType.SETTER);
@@ -46,6 +48,6 @@ public class MethodPropertySetter extends PropertyAccessorBase implements Proper
 
     @Override
     public IProperty getProperty() {
-        return null;
+        return property;
     }
 }

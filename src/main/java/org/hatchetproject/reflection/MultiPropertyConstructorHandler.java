@@ -6,7 +6,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
-public class MultiPropertyConstructorHandler extends MultiPropertySetterBase {
+public class MultiPropertyConstructorHandler<T> extends MultiPropertySetterBase implements ObjectBuilder<T> {
 
     private Constructor constructor;
 
@@ -27,5 +27,25 @@ public class MultiPropertyConstructorHandler extends MultiPropertySetterBase {
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new PropertySetterException("Can not instantiate object", e);
         }
+    }
+
+    @Override
+    public ObjectBuilder<T> setConstructorValue(int idx, Object value) {
+        return null;
+    }
+
+    @Override
+    public ObjectBuilder<T> setConstructorValues(Object[] values) {
+        return null;
+    }
+
+    @Override
+    public ObjectBuilder<T> clear() {
+        return null;
+    }
+
+    @Override
+    public T build() {
+        return null;
     }
 }
