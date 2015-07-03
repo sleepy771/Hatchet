@@ -1,7 +1,6 @@
 package org.hatchetproject.annotations;
 
 import org.hatchetproject.reflection.constants.AsSelf;
-import org.hatchetproject.value_management.DoNothing;
 import org.hatchetproject.value_management.UndefinedValueCast;
 import org.hatchetproject.value_management.ValueCast;
 

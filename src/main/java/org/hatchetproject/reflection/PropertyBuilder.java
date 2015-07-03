@@ -29,6 +29,14 @@ public class PropertyBuilder {
         this.propertyType = propertyType;
     }
 
+    public boolean canAssignSetter() {
+        return setter == null;
+    }
+
+    public boolean canAssignGetter() {
+        return getter == null;
+    }
+
     public PropertyBuilder setType(Class propertyType) {
         if (propertyType != null)
             this.propertyType = propertyType;

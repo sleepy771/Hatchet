@@ -1,6 +1,5 @@
 package org.hatchetproject.reflection;
 
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 import org.hatchetproject.exceptions.ManagerException;
 import org.hatchetproject.manager.memory.TimeoutManager;
 

@@ -4,4 +4,6 @@ import org.hatchetproject.exceptions.PropertyGetterException;
 
 public interface PropertyGetter extends PropertyAccessor {
     Object get(Object source) throws PropertyGetterException;
+
+    Object getRaw(Object source) throws PropertyGetterException;
 }

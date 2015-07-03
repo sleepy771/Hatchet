@@ -1,37 +1,46 @@
 package org.hatchetproject.reflection;
 
+import org.hatchetproject.exceptions.PropertyAccessorException;
 import org.hatchetproject.exceptions.PropertyGetterException;
 import org.hatchetproject.value_management.ValueCast;
 
 import java.lang.reflect.Field;
 
-public class FieldPropertyGetter implements PropertyGetter {
+public class FieldPropertyGetter extends PropertyAccessorBase implements PropertyGetter {
 
     private Field field;
     private ValueCast caster;
 
-    FieldPropertyGetter(Field field, ValueCast cast) {
+    FieldPropertyGetter(Field field, ValueCast cast) throws PropertyAccessorException {
+        super(cast, AccessorType.GETTER);
         if (field == null)
             throw new NullPointerException("Field can not be null");
         this.field = field;
-        this.caster = cast;
+    }
+
+    FieldPropertyGetter(Field field) throws PropertyAccessorException {
+        this(field, null);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public Object get(Object source) throws PropertyGetterException {
-        if (!getDeclaringClass().isInstance(source))
-            throw new PropertyGetterException("Invalid instance");
-        Object output = null;
-        try {
-            output = field.get(source);
-        } catch (IllegalAccessException e) {
-            throw new PropertyGetterException("Unacessible property", e);
-        }
+        Object output = getRaw(source);
         if (getCaster() != null) {
             output = getCaster().cast(output);
         }
         return output;
+    }
+
+    @Override
+    public Object getRaw(Object source) throws PropertyGetterException {
+        if (!getDeclaringClass().isInstance(source))
+            throw new PropertyGetterException("Invalid instance");
+        try {
+            return field.get(source);
+        } catch (IllegalAccessException e) {
+            throw new PropertyGetterException("Unacessible property", e);
+        }
     }
 
     @Override
@@ -45,7 +54,7 @@ public class FieldPropertyGetter implements PropertyGetter {
     }
 
     @Override
-    public ValueCast getCaster() {
-        return caster;
+    public IProperty getProperty() {
+        return null;
     }
 }

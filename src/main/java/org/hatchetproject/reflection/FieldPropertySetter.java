@@ -1,24 +1,25 @@
 package org.hatchetproject.reflection;
 
+import org.hatchetproject.exceptions.PropertyAccessorException;
 import org.hatchetproject.exceptions.PropertySetterException;
 import org.hatchetproject.value_management.ValueCast;
 
-import javax.xml.bind.PropertyException;
 import java.lang.reflect.Field;
 
-public class FieldPropertySetter implements PropertySetter {
+public class FieldPropertySetter extends PropertyAccessorBase implements PropertySetter {
 
     private Field field;
     private ValueCast caster;
 
-    FieldPropertySetter(Field field, ValueCast caster) {
+    FieldPropertySetter(Field field, ValueCast caster) throws PropertyAccessorException {
+        super(caster, AccessorType.SETTER);
         if (field == null)
             throw new NullPointerException("Field can not be null");
         this.field = field;
         this.caster = caster;
     }
 
-    public FieldPropertySetter(Field field) {
+    public FieldPropertySetter(Field field) throws PropertyAccessorException {
         this(field, null);
     }
 
@@ -46,7 +47,7 @@ public class FieldPropertySetter implements PropertySetter {
     }
 
     @Override
-    public ValueCast getCaster() {
-        return caster;
+    public IProperty getProperty() {
+        return null;
     }
 }

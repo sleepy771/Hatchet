@@ -1,7 +1,5 @@
 package org.hatchetproject.exceptions;
 
-import org.hatchetproject.annotations.Property;
-
 /**
  * Created by filip on 7/2/15.
  */

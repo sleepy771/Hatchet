@@ -1,7 +1,5 @@
 package org.hatchetproject.value_management;
 
-import org.hatchetproject.manager.memory.ReleaseManager;
-
 /**
  * Created by filip on 7/2/15.
  */

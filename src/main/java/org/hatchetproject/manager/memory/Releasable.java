@@ -1,7 +1,5 @@
 package org.hatchetproject.manager.memory;
 
-import org.apache.log4j.Logger;
-
 /**
  * Created by filip on 6/29/15.
  */

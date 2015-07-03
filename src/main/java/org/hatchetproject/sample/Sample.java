@@ -4,7 +4,6 @@ import org.hatchetproject.annotations.InjectDefault;
 import org.hatchetproject.annotations.InjectMultiple;
 import org.hatchetproject.annotations.Properties;
 import org.hatchetproject.annotations.Property;
-import org.hatchetproject.reflection.constants.Nothing;
 
 public class Sample {
 
