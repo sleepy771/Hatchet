@@ -5,6 +5,9 @@ package org.hatchetproject.reflection;
  */
 public interface Signature {
     String getName();
-    Class getType();
+    Class getReturnType();
+    Class[] getParameterTypes();
+    Class getParameterType(int idx);
+    int getParametersCount();
     Class getDeclaringClass();
 }

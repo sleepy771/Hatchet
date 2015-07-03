@@ -5,19 +5,18 @@ import org.hatchetproject.exceptions.PropertySetterException;
 import org.hatchetproject.value_management.ValueCast;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by filip on 7/3/15.
- */
-public class MultiParamMethodSetter extends PropertyAccessorBase implements PropertySetter {
+public class MultiPropertySetter extends PropertyAccessorBase implements PropertySetter {
 
     private int index;
     private IProperty property;
+    private Class valueClass;
 
-    protected MultiParamMethodSetter(ValueCast caster) throws PropertyAccessorException {
+    protected MultiPropertySetter(ValueCast caster, Class valueClass, IProperty property) throws PropertyAccessorException {
         super(caster, AccessorType.SETTER);
+        this.valueClass = valueClass;
+        this.property = property;
     }
 
     @Override
@@ -28,10 +27,11 @@ public class MultiParamMethodSetter extends PropertyAccessorBase implements Prop
         List destList = (List) destination;
         if (!getValueClass().isInstance(value))
             throw new PropertySetterException("Invalid property instance");
-        if (hasCaster()) {
-            value = getCaster().cast(value);
+        try {
+            destList.set(index, cast(value));
+        } catch (PropertyAccessorException e) {
+            throw new PropertySetterException("can not cast", e);
         }
-        destList.set(index, value);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class MultiParamMethodSetter extends PropertyAccessorBase implements Prop
 
     @Override
     public Class getValueClass() {
-        return hasCaster() ? getCaster().getInputType() : property.getPropertyType();
+        return valueClass;
     }
 
     @Override

@@ -5,11 +5,13 @@ public abstract class SignatureBase<T extends Signature> implements Signature {
     private final String name;
     private final Class type;
     private final Class declaringClass;
+    private final Class[] paramTypes;
     private volatile int hashCode;
 
-    protected SignatureBase(String name, Class type, Class declaringClass) {
+    protected SignatureBase(String name, Class type, Class[] paramTypes, Class declaringClass) {
         this.name = name;
         this.type = type;
+        this.paramTypes = paramTypes;
         this.declaringClass = declaringClass;
     }
 
@@ -19,13 +21,32 @@ public abstract class SignatureBase<T extends Signature> implements Signature {
     }
 
     @Override
-    public final Class getType() {
+    public final Class getReturnType() {
         return type;
     }
 
     @Override
     public final Class getDeclaringClass() {
         return declaringClass;
+    }
+
+    @Override
+    public final Class[] getParameterTypes() {
+        Class[] typesCopy = new Class[paramTypes.length];
+        System.arraycopy(paramTypes, 0, typesCopy, 0, paramTypes.length);
+        return typesCopy;
+    }
+
+    @Override
+    public final int getParametersCount() {
+        return paramTypes.length;
+    }
+
+    @Override
+    public final Class getParameterType(int idx) {
+        if (idx >= 0 && idx < paramTypes.length)
+            throw new IndexOutOfBoundsException("Index " + idx + " is not in set {" + 0 + ", ..., " + paramTypes.length + "}");
+        return paramTypes[idx];
     }
 
     @Override
@@ -36,8 +57,19 @@ public abstract class SignatureBase<T extends Signature> implements Signature {
         T otherSignature = (T) o;
         return this.declaringClass == otherSignature.getDeclaringClass()
                 && this.name.equals(otherSignature.getName())
-                && this.type == otherSignature.getType()
+                && this.type == otherSignature.getReturnType()
+                && parametersEquals(otherSignature)
                 && equals(otherSignature);
+    }
+
+    private boolean parametersEquals(T signature) {
+        if (signature.getParametersCount() != getParametersCount())
+            return false;
+        for (int k = 0; k < paramTypes.length; k++) {
+            if (paramTypes[k] != signature.getParameterType(k))
+                return false;
+        }
+        return true;
     }
 
     @Override
@@ -47,6 +79,7 @@ public abstract class SignatureBase<T extends Signature> implements Signature {
             hash = hash * 31 + declaringClass.hashCode();
             hash = hash * 31 + name.hashCode();
             hash = hash * 31 + type.hashCode();
+            hash = hash * 31 + hashParameters();
             hash = hash * 31 + additionalHash();
             hashCode = hash;
         }
@@ -59,6 +92,14 @@ public abstract class SignatureBase<T extends Signature> implements Signature {
                 + type.getName() + ";\n\tdeclaringClass = "
                 + declaringClass.getName() + ";\n"
                 + additionalDescription() + "}";
+    }
+
+    private int hashParameters() {
+        int seed = 17;
+        for (Class parameters : paramTypes) {
+            seed  = seed * 31 + parameters.hashCode();
+        }
+        return seed;
     }
 
     protected int additionalHash() {

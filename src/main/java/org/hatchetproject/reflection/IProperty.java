@@ -9,4 +9,6 @@ public interface IProperty {
     Class getDeclaringClass();
 
     Class getPropertyType();
+
+    Signature getSignature();
 }

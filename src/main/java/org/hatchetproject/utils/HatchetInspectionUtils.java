@@ -1,5 +1,7 @@
 package org.hatchetproject.utils;
 
+import org.hatchetproject.reflection.Signature;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -28,11 +30,21 @@ public class HatchetInspectionUtils {
     }
 
     public static boolean isGetter(Method method) {
-        return (void.class != method.getReturnType() || Void.class != method.getReturnType()) && method.getParameterCount() == 0;
+        return (void.class != method.getReturnType() || Void.class != method.getReturnType())
+                && method.getParameterCount() == 0;
+    }
+
+    public static boolean isGetter(Signature signature) {
+        return (signature.getReturnType() != void.class || Void.class != signature.getReturnType())
+                && signature.getParametersCount() == 0;
     }
 
     public static boolean isSetter(Method method) {
         return method.getParameterCount() > 0;
+    }
+
+    public static boolean isSetter(Signature signature) {
+        return signature.getParametersCount() > 0;
     }
 
     public static boolean isAccessibleGetter(Method method) {

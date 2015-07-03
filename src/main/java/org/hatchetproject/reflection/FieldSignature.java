@@ -9,7 +9,7 @@ public class FieldSignature extends SignatureBase<FieldSignature> implements Sig
     }
 
     public FieldSignature(String name, Class type, Class declaringClass) {
-        super(name, type, declaringClass);
+        super(name, type, new Class[] {type,}, declaringClass);
     }
 
     @Override
