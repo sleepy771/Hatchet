@@ -43,6 +43,9 @@ public interface Scheme extends Releasable, Classy {
 
     boolean hasDefaultConstructorValues();
 
+    ObjectHandler getObjectHandler();
+
+    // TODO remove
     ValueGetter getGetter();
 
     ValueSetter getSetter();

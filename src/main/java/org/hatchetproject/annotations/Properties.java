@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * Created by filip on 6/28/15.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
+@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 public @interface Properties {
     Property[] value();
 }

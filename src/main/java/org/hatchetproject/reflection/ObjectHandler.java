@@ -3,9 +3,6 @@ package org.hatchetproject.reflection;
 import java.util.Collection;
 import java.util.Map;
 
-/**
- * Created by filip on 7/4/15.
- */
 public interface ObjectHandler<T> {
 
     void addPropertySetter(PropertySetter setter);
