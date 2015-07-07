@@ -38,4 +38,31 @@ public class HatchetCollectionsManipulation {
         }
         return true;
     }
+
+    public void swap(Object[] array, int i1, int i2) {
+        Object tmp = array[i1];
+        array[i1] = array[i2];
+        array[i2] = tmp;
+    }
+
+    public void rotate(Object[] array, int fromIndex, int toIndex) {
+
+        // 1,2,3,4,5,6,7,8,9 - > 1,2,3,4,5,8,6,7,9
+
+        int signum = (0x10000000 & (toIndex - fromIndex)) * 2 +1;
+        int space = Math.abs(toIndex - fromIndex);
+        if (fromIndex > toIndex) {
+            Object tmp = array[fromIndex];
+            for (int k = fromIndex; k > toIndex; k--) {
+                array[k] = array[k-1];
+            }
+            array[toIndex] = tmp;
+        } else if (toIndex > fromIndex) {
+            Object tmp = array[fromIndex];
+            for (int k = fromIndex; k < toIndex; k++) {
+                array[k] = array[k+1];
+            }
+            array[toIndex] = tmp;
+        }
+    }
 }
