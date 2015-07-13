@@ -85,4 +85,8 @@ public class HatchetInspectionUtils {
     public static boolean isAccessibleConstructor(Constructor constructor) {
         return isPublic(constructor) || isProtected(constructor);
     }
+
+    public static boolean safeEquals(Object o1, Object o2) {
+        return (o1 != null && o2 != null && o1.equals(o2)) || o1 == o2;
+    }
 }

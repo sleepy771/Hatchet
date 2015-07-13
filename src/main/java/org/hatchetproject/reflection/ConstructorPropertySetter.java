@@ -4,22 +4,23 @@ import org.hatchetproject.exceptions.PropertyAccessorException;
 import org.hatchetproject.exceptions.PropertySetterException;
 import org.hatchetproject.value_management.ValueCast;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-/**
- * Created by filip on 7/6/15.
- */
+
 public class ConstructorPropertySetter extends PropertyAccessorBase implements PropertySetter {
 
     private final int index;
     private final Class declaringClass;
+    private WeakReference<IProperty> propertyWeakReference;
 
 
-    ConstructorPropertySetter(Constructor constructor, ValueCast caster, int index) throws PropertyAccessorException {
+    ConstructorPropertySetter(IProperty constructorProperty, Constructor constructor, ValueCast caster, int index) throws PropertyAccessorException {
         super(caster, AccessorType.SETTER);
         this.index = index;
         declaringClass = constructor.getDeclaringClass();
+        propertyWeakReference = new WeakReference<>(constructorProperty);
     }
 
     @Override
@@ -52,6 +53,6 @@ public class ConstructorPropertySetter extends PropertyAccessorBase implements P
 
     @Override
     public IProperty getProperty() {
-        return null;
+        return propertyWeakReference.get();
     }
 }
