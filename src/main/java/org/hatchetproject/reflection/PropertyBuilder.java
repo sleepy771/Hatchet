@@ -10,6 +10,7 @@ import org.hatchetproject.exceptions.ManagerException;
 import org.hatchetproject.exceptions.PropertyAccessorException;
 import org.hatchetproject.reflection.constants.AsSelf;
 import org.hatchetproject.utils.HatchetInspectionUtils;
+import org.hatchetproject.value_management.RegistrableValue.ValueSignature;
 import org.hatchetproject.value_management.UndefinedValueCast;
 import org.hatchetproject.value_management.ValueCast;
 import org.hatchetproject.value_management.ValueCastManager;
@@ -21,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class PropertyBuilder {
@@ -33,6 +35,8 @@ public class PropertyBuilder {
     private PropertySetter setter;
 
     private PropertyGetter getter;
+
+    private Map<Integer, ValueSignature> injects;
 
     private int index;
 
@@ -59,6 +63,14 @@ public class PropertyBuilder {
     public PropertyBuilder setName(String name) {
         if (!HatchetInspectionUtils.isEmpty(name))
             this.propertyName = name;
+        return this;
+    }
+
+    public PropertyBuilder setInject(int idx, ValueSignature valueSignature) {
+        if (injects.containsKey(idx)) {
+            throw new IllegalArgumentException();
+        }
+        injects.put(idx, valueSignature);
         return this;
     }
 
@@ -216,13 +228,16 @@ public class PropertyBuilder {
         PositionedValue[] values = new PositionedValue[constructor.getParameterCount()];
         int idx = 0;
         int propSize = 0;
+        Set<Property> constructroProperies = new HashSet<>();
         if (property != null) {
             idx = add(idx, values, new PositionedValue(property));
+            constructroProperies.add(property);
             propSize++;
         }
         if (properties != null) {
             for (Property prop : properties.value()) {
                 idx = add(idx, values, new PositionedValue(prop));
+                constructroProperies.add(prop);
                 propSize++;
             }
         }
@@ -235,6 +250,7 @@ public class PropertyBuilder {
             }
         }
         checkParameters(values);
+
         return null;
     }
 

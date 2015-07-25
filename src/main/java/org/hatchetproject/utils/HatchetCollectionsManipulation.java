@@ -1,8 +1,11 @@
 package org.hatchetproject.utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,6 +46,24 @@ public class HatchetCollectionsManipulation {
         Object tmp = array[i1];
         array[i1] = array[i2];
         array[i2] = tmp;
+    }
+
+    public static Iterator<Integer> generateIntegers(int min, int max, int step) {
+        return new Iterator<Integer>() {
+            int ptr = min;
+            @Override
+            public boolean hasNext() {
+                return ptr < max;
+            }
+            @Override
+            public Integer next() {
+                try {
+                    return ptr;
+                } finally {
+                    ptr += step;
+                }
+            }
+        };
     }
 
     public void rotate(Object[] array, int fromIndex, int toIndex) {

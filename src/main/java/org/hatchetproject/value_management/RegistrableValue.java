@@ -2,7 +2,7 @@ package org.hatchetproject.value_management;
 
 import org.hatchetproject.utils.HatchetInspectionUtils;
 
-public class RegistrableValue {
+public class RegistrableValue implements InjectableValue {
 
     public static class ValueSignature {
         private final Class type;
@@ -58,18 +58,22 @@ public class RegistrableValue {
         throw new ClassCastException("Can not cast " + value.getClass().getName() + " to " + signature.type.getName());
     }
 
+    @Override
     public Object getValue() {
         return value;
     }
 
+    @Override
     public Class getType() {
         return signature.type;
     }
 
+    @Override
     public String getName() {
         return signature.name;
     }
 
+    @Override
     public ValueSignature getSignature() {
         return this.signature;
     }
