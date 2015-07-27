@@ -48,8 +48,8 @@ public class HatchetCollectionsManipulation {
         array[i2] = tmp;
     }
 
-    public static Iterator<Integer> generateIntegers(int min, int max, int step) {
-        return new Iterator<Integer>() {
+    public static Iterable<Integer> createIntegersGenerator(int min, int max, int step) {
+        return () -> new Iterator<Integer>() {
             int ptr = min;
             @Override
             public boolean hasNext() {

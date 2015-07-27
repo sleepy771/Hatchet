@@ -1,98 +1,47 @@
 package org.hatchetproject.value_management.inject_default;
 
-import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.InputMismatchException;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-class MutableParameters implements Parameters {
+/**
+ * Created by filip on 7/27/15.
+ */
+interface MutableParameters extends Parameters {
 
-    private Object[] params;
-    private Class[] paramTypes;
-    private Set<Integer> assigned;
+    Object set(int index, Object value) throws ClassCastException;
 
-    MutableParameters(Class[] paramTypes) {
-        this.paramTypes = new Class[paramTypes.length];
-        System.arraycopy(paramTypes, 0, this.paramTypes, 0, paramTypes.length);
-        this.params = new Object[paramTypes.length];
-        assigned = new HashSet<>();
-    }
+    Map<Integer, Object> setAll(Map<Integer, Object> values);
 
-    public final Object set(int index, Object value) throws ClassCastException {
-        try {
-            return params[index];
-        } finally {
-            params[index] = paramTypes[index].cast(value);
-            assigned.remove(index);
-        }
-    }
+    Map<Integer, Object> setAll(List<Integer> indexes, List<Object> values);
 
-    public final Map<Integer, Object> setAll(Map<Integer, Object> values) {
-        Map<Integer, Object> output = new HashMap<>();
-        for (Map.Entry<Integer, Object> valueEntry : values.entrySet()) {
-            output.put(valueEntry.getKey(), set(valueEntry.getKey(), valueEntry.getValue()));
-        }
-        return output;
-    }
+    Map<Integer, Object> setAll(int[] indexes, Object[] values);
 
-    public final Map<Integer, Object> setAll(List<Integer> indexes, List<Object> values) {
-        if (indexes.size() != values.size()) {
-            throw new InputMismatchException("Indexes size does not match values size");
-        }
-        if (new HashSet<>(indexes).size() != indexes.size()) {
-            throw new InputMismatchException("Indexes does not seems to be unique");
-        }
-        Map<Integer, Object> valueMap = new HashMap<>();
-        Iterator<Integer> indexesIterator = indexes.iterator();
-        Iterator<Object> valuesIterator = values.iterator();
-        while (indexesIterator.hasNext() && valuesIterator.hasNext()) {
-            // TODO maybe prepared set would be better, firs store all values to tmp array then merge them
-            int currentIndex = indexesIterator.next();
-            valueMap.put(currentIndex, set(currentIndex, valuesIterator.next()));
-        }
-        return valueMap;
-    }
+    Map<Integer, Object> setAll(Object[] values);
 
-    public final Map<Integer, Object> setAll(int[] indexes, Object[] values) {
-        return setAll(Arrays.asList(ArrayUtils.toObject(indexes)), Arrays.asList(values));
-    }
+    Map<Integer, Object> setAll(List<Object> values);
 
-    @Override
-    public final Object get(int idx) {
-        return params[idx];
-    }
+    Map<Integer, Object> setAllFrom(int beginningIndex, Object[] values);
 
-    @Override
-    public final int size() {
-        return paramTypes.length - assigned.size();
-    }
+    Map<Integer, Object> setAllTo(int toIndex, Object[] values);
 
-    @Override
-    public final int maxSize() {
-        return paramTypes.length;
-    }
+    int add(Object value);
 
-    @Override
-    public final boolean isFilled() {
-        return assigned.isEmpty();
-    }
+    List<Integer> addAll(Object[] values);
 
-    @Override
-    public List<Object> asList() {
-        return new ArrayList<>(Arrays.asList(params));
-    }
+    List<Integer> addAll(List<Object> values);
 
-    @Override
-    public Object[] asArray() {
-        Object[] tmp = new Object[params.length];
-        System.arraycopy(params, 0, tmp, 0, params.length);
-        return tmp;
-    }
+    void clear();
+
+    Object remove(int index);
+
+    List<Object> removeAll(int[] indexes);
+
+    List<Object> removeAllIndexes(List<Integer> indexes);
+
+    int remove(Object object);
+
+    List<Integer> removeAll(Object[] objects);
+
+    List<Integer> removeAll(List<Object> objects);
 }

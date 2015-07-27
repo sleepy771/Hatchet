@@ -2,9 +2,6 @@ package org.hatchetproject.value_management.inject_default;
 
 import java.util.List;
 
-/**
- * Created by filip on 7/16/15.
- */
 public class ParametersProxy implements Parameters {
 
     private final Parameters parameters;
@@ -16,6 +13,16 @@ public class ParametersProxy implements Parameters {
     @Override
     public Object get(int idx) {
         return parameters.get(idx);
+    }
+
+    @Override
+    public List<Object> getRangeAsList(int from, int to) {
+        return parameters.getRangeAsList(from, to);
+    }
+
+    @Override
+    public Object[] getRangeAsArray(int from, int to) {
+        return parameters.getRangeAsArray(from, to);
     }
 
     @Override
