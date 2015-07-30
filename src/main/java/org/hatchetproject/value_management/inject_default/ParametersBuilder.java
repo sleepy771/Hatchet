@@ -22,6 +22,99 @@ import java.util.stream.Collectors;
 
 public final class ParametersBuilder implements AssignedParameters, MutableParameters, Builder<AssignedParameters> {
 
+    private static class AssignedParametersImpl extends AssignedParametersWithSetter {
+
+        private final Class[] paramTypes;
+
+        private final Object[] parameters;
+
+        private final Class declaringClass;
+
+        private final String name;
+
+        private final Type type;
+
+        private AssignedParametersImpl(Type type, Class declaringClass, String name, Class[] paramTypes, Object[] parameters) {
+            this.type = type;
+            this.declaringClass = declaringClass;
+            this.paramTypes = paramTypes;
+            this.parameters = parameters;
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public Type getType() {
+            return type;
+        }
+
+        @Override
+        public Class getDeclaringClass() {
+            return declaringClass;
+        }
+
+        @Override
+        public Object get(int idx) {
+            return parameters[idx];
+        }
+
+        @Override
+        public List<Object> getRangeAsList(int from, int to) {
+            return Arrays.asList(getRangeAsArray(from, to));
+        }
+
+        @Override
+        public Object[] getRangeAsArray(int from, int to) {
+            if ((from >= to || 0 >= from || to >= parameters.length)) {
+                throw new InputMismatchException("Invalid input");
+            }
+            Object[] values = new Object[to - from];
+            System.arraycopy(this.parameters, from, values, 0, to - from);
+            return values;
+        }
+
+        @Override
+        public int size() {
+            return paramTypes.length;
+        }
+
+        @Override
+        public int maxSize() {
+            return paramTypes.length;
+        }
+
+        @Override
+        public boolean isFilled() {
+            return true;
+        }
+
+        @Override
+        public List<Object> asList() {
+            return Arrays.asList(asArray());
+        }
+
+        @Override
+        public Object[] asArray() {
+            Object[] values = new Object[this.parameters.length];
+            System.arraycopy(this.parameters, 0, values, 0, this.parameters.length);
+            return values;
+        }
+
+        @Override
+        protected Class[] getParamTypes() {
+            return paramTypes;
+        }
+
+        @Override
+        protected Object[] dirctlyAccessedValues() {
+            return parameters;
+        }
+    }
+
     private final Method method;
 
     private final Constructor constructor;
@@ -72,7 +165,7 @@ public final class ParametersBuilder implements AssignedParameters, MutableParam
     }
 
     @Override
-    public Class getForClass() {
+    public Class getDeclaringClass() {
         return type.getDeclaringClass(method, constructor, field);
     }
 
@@ -89,14 +182,36 @@ public final class ParametersBuilder implements AssignedParameters, MutableParam
         }
     }
 
+    private Object safeSet(Object[] array, int index, Object value) {
+        Object old = values[index];
+        try {
+            values[index] = parameterTypes[index].cast(value);
+            unassigned.remove(index);
+            return old;
+        } catch (ClassCastException e) {
+            values[index] = old;
+            throw e;
+        }
+    }
+
+    // This is unchecked
+    private void setValues(Object[] values) {
+        System.arraycopy(values, 0, this.values, 0, values.length);
+    }
+
     @Override
     public Map<Integer, Object> setAll(Map<Integer, Object> values) throws ClassCastException {
         Map<Integer, Object> output = new HashMap<>();
-        for (Map.Entry<Integer, Object> valueEntry : values.entrySet()) {
-            Object old = set(valueEntry.getKey(), valueEntry.getValue());
-            if (null != old) {
-                output.put(valueEntry.getKey(), old);
+        try {
+            for (Map.Entry<Integer, Object> valueEntry : values.entrySet()) {
+                Object old = set(valueEntry.getKey(), valueEntry.getValue());
+                if (null != old) {
+                    output.put(valueEntry.getKey(), old);
+                }
             }
+        } catch (ClassCastException | IndexOutOfBoundsException e) {
+            setAll(output); // revert changes and throw exception
+            throw e;
         }
         return output;
     }
@@ -110,16 +225,20 @@ public final class ParametersBuilder implements AssignedParameters, MutableParam
             throw new InputMismatchException("Indexes does not seems to be unique");
         }
         Map<Integer, Object> valueMap = new HashMap<>();
-        Iterator<Integer> indexesIterator = indexes.iterator();
-        Iterator<Object> valuesIterator = values.iterator();
-        while (indexesIterator.hasNext() && valuesIterator.hasNext()) {
-            // TODO maybe prepared set would be better, firs store all values to tmp array then merge them
-            int currentIndex = indexesIterator.next();
+        try {
+            Iterator<Integer> indexesIterator = indexes.iterator();
+            Iterator<Object> valuesIterator = values.iterator();
+            while (indexesIterator.hasNext() && valuesIterator.hasNext()) {
+                int currentIndex = indexesIterator.next();
 
-            Object old = set(currentIndex, valuesIterator.next());
-            if (null != old) {
-                valueMap.put(currentIndex, old);
+                Object old = set(currentIndex, valuesIterator.next());
+                if (null != old) {
+                    valueMap.put(currentIndex, old);
+                }
             }
+        } catch (ClassCastException | IndexOutOfBoundsException e) {
+            setAll(valueMap);
+            throw e;
         }
         return valueMap;
     }
@@ -131,22 +250,49 @@ public final class ParametersBuilder implements AssignedParameters, MutableParam
 
     @Override
     public Map<Integer, Object> setAll(Object[] values) {
-        return null;
+        return setAllFrom(0, values);
     }
 
     @Override
     public Map<Integer, Object> setAll(List<Object> values) {
-        return null;
+        return setAll(values.toArray());
     }
 
     @Override
     public Map<Integer, Object> setAllFrom(int beginningIndex, Object[] values) {
-        return null;
+        if (values.length + beginningIndex > this.values.length) {
+            throw new IllegalArgumentException("values size is too big");
+        }
+        Map<Integer, Object> oldValues = new HashMap<>();
+        try {
+            for (int cursor = beginningIndex, length = values.length + beginningIndex; cursor < length; cursor++) {
+                oldValues.put(cursor, set(cursor, values[cursor]));
+            }
+        } catch (ClassCastException | IndexOutOfBoundsException e) {
+            setAll(oldValues);
+            throw e;
+        }
+        return oldValues;
     }
 
     @Override
     public Map<Integer, Object> setAllTo(int toIndex, Object[] values) {
-        return null;
+        if (toIndex + 1 < values.length) {
+            throw new InputMismatchException("index is less than values length");
+        }
+        if (toIndex > this.values.length) {
+            throw new IndexOutOfBoundsException("index is above the range");
+        }
+        Map<Integer, Object> oldValues = new HashMap<>();
+        try {
+            for (int cursor = toIndex - values.length; cursor < toIndex; cursor++) {
+                oldValues.put(cursor, set(cursor, values[cursor]));
+            }
+        } catch (ClassCastException | IndexOutOfBoundsException e) {
+            setAll(oldValues);
+            throw e;
+        }
+        return oldValues;
     }
 
     private int add(int startIndex, Object value) throws ClassCastException {
@@ -171,8 +317,14 @@ public final class ParametersBuilder implements AssignedParameters, MutableParam
     public List<Integer> addAll(Object[] values) {
         List<Integer> indexes = new ArrayList<>();
         int startIndex = 0;
-        for (Object value : values) {
-            startIndex = add(startIndex, value);
+        try {
+            for (Object value : values) {
+                startIndex = add(startIndex, value);
+                indexes.add(startIndex);
+            }
+        } catch (IndexOutOfBoundsException | ClassCastException e) {
+            removeAll(ArrayUtils.toPrimitive((Integer[]) indexes.toArray()));
+            throw e;
         }
         return indexes;
     }
@@ -299,6 +451,9 @@ public final class ParametersBuilder implements AssignedParameters, MutableParam
 
     @Override
     public AssignedParameters build() {
-        return null;
+        if (!isFilled()) {
+            throw new UnsupportedOperationException("Can't build paramteres until not set all");
+        }
+        return new AssignedParametersImpl(type, getDeclaringClass(), getName(), parameterTypes, values);
     }
 }

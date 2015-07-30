@@ -15,7 +15,7 @@ public class SchemeManager extends TimeoutManager<Class, Scheme> {
 
     @Override
     protected Class getKey(Scheme releasable) {
-        return releasable.getForClass();
+        return releasable.getDeclaringClass();
     }
 
     @Override
