@@ -11,15 +11,40 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-/**
- * Created by filip on 6/27/15.
- */
 public abstract class AbstractManager<KEY, ELEMENT> implements Manager<KEY, ELEMENT> {
 
-    private Map<KEY, ELEMENT> managerMap;
+    private static class ManagerIterator<KEY, ELEMENT> implements Iterator<ManagerEntry<KEY, ELEMENT>> {
+
+        private Iterator<Map.Entry<KEY, ELEMENT>> iterator;
+
+        ManagerIterator(Map<KEY, ELEMENT> map) {
+            iterator = map.entrySet().iterator();
+        }
+
+        @Override
+        public boolean hasNext() {
+            boolean hasNext = iterator.hasNext();
+            if (!hasNext) {
+                iterator = null;
+            }
+            return hasNext;
+        }
+
+        @Override
+        public ManagerEntry<KEY, ELEMENT> next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("Iterator is dereferenced");
+            }
+            Map.Entry<KEY, ELEMENT> entry = iterator.next();
+            return new ManagerEntryImpl<>(entry);
+        }
+    }
+
+    private final Map<KEY, ELEMENT> managerMap;
 
     public AbstractManager() {
         this(new HashMap<>());
+        populate(this.managerMap);
     }
 
     protected AbstractManager(Map<KEY, ELEMENT> map) {
@@ -28,11 +53,13 @@ public abstract class AbstractManager<KEY, ELEMENT> implements Manager<KEY, ELEM
 
     @Override
     public final void register(ELEMENT element) throws ManagerException {
-        if (element == null)
+        if (null == element) {
             throw new ManagerException("Invalid argument, null can not be registered");
+        }
         KEY key = getKeyForElement(element);
-        if (!silentRegister(key, element))
+        if (!silentRegister(key, element)) {
             throw new ManagerException("Key [" + keyToString(key) + "] for element is already registered!");
+        }
         if (!postRegister(key, element)) {
             throw new ManagerException("Post register failed");
         }
@@ -40,8 +67,9 @@ public abstract class AbstractManager<KEY, ELEMENT> implements Manager<KEY, ELEM
 
     @Override
     public final void unregister(ELEMENT element) {
-        if (element == null)
+        if (null == element) {
             return;
+        }
         KEY key = getKeyForElement(element);
         if (remove(key, element)) {
             postUnregister(key, element);
@@ -60,26 +88,7 @@ public abstract class AbstractManager<KEY, ELEMENT> implements Manager<KEY, ELEM
 
     @Override
     public Iterator<ManagerEntry<KEY, ELEMENT>> iterator() {
-        return new Iterator<ManagerEntry<KEY, ELEMENT>>() {
-
-            private Iterator<Map.Entry<KEY, ELEMENT>> iterator = managerMap.entrySet().iterator();
-
-            @Override
-            public boolean hasNext() {
-                boolean hasNext = iterator != null && iterator.hasNext();
-                if (!hasNext)
-                    iterator = null;
-                return hasNext;
-            }
-
-            @Override
-            public ManagerEntry<KEY, ELEMENT> next() {
-                if (!hasNext())
-                    throw new NoSuchElementException("Iterator is dereferenced");
-                Map.Entry<KEY, ELEMENT> entry = iterator.next();
-                return new ManagerEntryImpl<>(entry);
-            }
-        };
+        return new ManagerIterator<>(managerMap);
     }
 
     protected abstract KEY getKeyForElement(ELEMENT element);
@@ -92,9 +101,12 @@ public abstract class AbstractManager<KEY, ELEMENT> implements Manager<KEY, ELEM
 
     protected abstract String verboseElement(ELEMENT element);
 
+    protected abstract void populate(Map<KEY, ELEMENT> originalMap);
+
     protected final boolean silentRegister(KEY key, ELEMENT element) {
-        if (key == null || element == null)
-            return  false;
+        if (null == key || null == element) {
+            return false;
+        }
         if (isKeyRegistered(key)) {
             return !isRegistered(key, element);
         }
@@ -110,7 +122,7 @@ public abstract class AbstractManager<KEY, ELEMENT> implements Manager<KEY, ELEM
     }
 
     protected final boolean remove(KEY key, ELEMENT element) {
-        return !(key == null || element == null) && managerMap.remove(key, element);
+        return !(null == key || null == element) && managerMap.remove(key, element);
     }
 
     protected final ELEMENT getDirectly(KEY key) {
@@ -118,25 +130,26 @@ public abstract class AbstractManager<KEY, ELEMENT> implements Manager<KEY, ELEM
     }
 
     protected final boolean containsKey(KEY key) {
-        return key != null && managerMap.containsKey(key);
+        return null != key && managerMap.containsKey(key);
     }
 
     protected final boolean contains(KEY key, ELEMENT element) {
-        if (key == null ||element == null) {
+        if (null == key || null == element) {
             return false;
         }
         ELEMENT registered = managerMap.get(key);
-        return registered != null && registered.equals(element);
+        return null != registered && registered.equals(element);
     }
 
     protected final String keyToString(KEY key) {
-        if (key == null)
+        if (null == key) {
             return "Key: null";
+        }
         return verboseKey(key);
     }
 
     protected final String elementToString(ELEMENT element) {
-        if (element == null) {
+        if (null == element) {
             return "Element: null";
         }
         return verboseElement(element);

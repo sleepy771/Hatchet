@@ -8,7 +8,15 @@ import java.io.OutputStream;
  */
 public interface Persistent {
 
-    void load(InputStream inputStream) throws Exception;
+    void load() throws Exception;
 
-    OutputStream save() throws Exception;
+    void setInputStream(InputStream stream);
+
+    void setOutputStream(OutputStream stream);
+
+    OutputStream getOutputStream();
+
+    InputStream getInputStream();
+
+    void save() throws Exception;
 }

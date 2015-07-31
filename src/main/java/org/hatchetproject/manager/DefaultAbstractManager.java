@@ -2,11 +2,13 @@ package org.hatchetproject.manager;
 
 import org.hatchetproject.exceptions.ManagerException;
 
+import java.util.Map;
+
 public abstract class DefaultAbstractManager<KEY, ELEMENT> extends AbstractManager<KEY, ELEMENT> {
 
     @Override
     public final boolean isRegistered(ELEMENT element) {
-        return element != null && contains(getKeyForElement(element), element);
+        return null != element && contains(getKeyForElement(element), element);
     }
 
     @Override
@@ -23,7 +25,7 @@ public abstract class DefaultAbstractManager<KEY, ELEMENT> extends AbstractManag
     public final ELEMENT get(KEY key) throws ManagerException {
         try {
             ELEMENT element = getDirectly(key);
-            if (element == null) {
+            if (null == element) {
                 throw new ManagerException("Undefined uid");
             }
             return element;
@@ -39,6 +41,10 @@ public abstract class DefaultAbstractManager<KEY, ELEMENT> extends AbstractManag
 
     @Override
     protected void postUnregister(KEY key, ELEMENT element) {
+    }
+
+    @Override
+    protected void populate(Map<KEY, ELEMENT> originalMap){
     }
 
     @Override

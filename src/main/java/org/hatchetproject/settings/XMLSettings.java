@@ -2,137 +2,182 @@ package org.hatchetproject.settings;
 
 import org.hatchetproject.TypeValueEntry;
 
-import java.io.BufferedReader;
+import javax.xml.bind.JAXBContext;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.HashMap;
+import java.io.Serializable;
+import java.util.Iterator;
 import java.util.Map;
 
-
 public class XMLSettings implements Persistent, Settings {
+
+    enum LoadBehavior {
+        OVERRIDE, MERGE, CLEAR;
+    }
+
+    private Settings settings;
+
+    private LoadBehavior loadBehavior;
+
+    private InputStream inputStream;
+
+    private OutputStream outputStream;
+
+    public LoadBehavior getLoadBehavior() {
+        return loadBehavior;
+    }
+
+    public void setLoadBehavior(LoadBehavior loadBehavior) {
+        this.loadBehavior = loadBehavior;
+    }
+
     @Override
-    public void load(InputStream inputStream) throws Exception {
+    public void load() throws Exception {
+        JAXBContext context = JAXBContext.newInstance()
+    }
+
+    @Override
+    public void setInputStream(InputStream stream) {
 
     }
 
     @Override
-    public OutputStream save() throws Exception {
+    public void setOutputStream(OutputStream stream) {
+
+    }
+
+    @Override
+    public OutputStream getOutputStream() {
         return null;
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        return null;
+    }
+
+    @Override
+    public void save() throws Exception {
+
     }
 
     @Override
     public Object getValue(String settingName) {
-        return null;
+        return settings.getValue(settingName);
     }
 
     @Override
     public <T> T getValue(String settingName, Class<T> type) {
-        return null;
+        return settings.getValue(settingName, type);
     }
 
     @Override
     public Class getType(String settingName) {
-        return null;
+        return settings.getType(settingName);
     }
 
     @Override
     public SettingGetter getSetting(String setting) {
-        return null;
+        return settings.getSetting(setting);
     }
 
     @Override
     public Map<String, Object> getValues(Iterable<String> settingNames) {
-        return null;
+        return settings.getValues(settingNames);
     }
 
     @Override
     public Map<String, Class> getTypes(Iterable<String> settingNames) {
-        return null;
+        return settings.getTypes(settingNames);
     }
 
     @Override
     public Map<String, SettingGetter> getSettings(Iterable<String> settingNames) {
-        return null;
+        return settings.getSettings(settingNames);
     }
 
     @Override
     public boolean addSetting(SettingGetter settingGetter) {
-        return false;
+        return settings.addSetting(settingGetter);
     }
 
     @Override
-    public boolean addSetting(String name, Class type, Object value) {
-        return false;
+    public boolean addSetting(String name, Class type, Serializable value) {
+        return settings.addSetting(name, type, value);
     }
 
     @Override
     public SettingGetter setSetting(SettingGetter setting) {
-        return null;
+        return settings.setSetting(setting);
     }
 
     @Override
-    public SettingGetter setSetting(String name, Class type, Object value) {
-        return null;
+    public SettingGetter setSetting(String name, Class type, Serializable value) {
+        return settings.setSetting(name, type, value);
     }
 
     @Override
     public boolean addAllSettings(Iterable<SettingGetter> settings) {
-        return false;
+        return this.settings.addAllSettings(settings);
     }
 
     @Override
     public Map<String, SettingGetter> setAllSettings(Iterable<SettingGetter> settings) {
-        return null;
+        return this.settings.setAllSettings(settings);
     }
 
     @Override
     public void clear() {
-
+        settings.clear();
     }
 
     @Override
     public SettingGetter removeSettingByName(String name) {
-        return null;
+        return settings.removeSettingByName(name);
     }
 
     @Override
     public Map<String, SettingGetter> removeAllSettingsByName(Iterable<String> settingNames) {
-        return null;
+        return settings.removeAllSettingsByName(settingNames);
     }
 
     @Override
     public boolean removeSetting(SettingGetter settings) {
-        return false;
+        return this.settings.removeSetting(settings);
     }
 
     @Override
     public boolean removeAllSettings(Iterable<SettingGetter> settings) {
-        return false;
+        return this.settings.removeAllSettings(settings);
     }
 
     @Override
     public boolean containsSetting(String name, Class type) {
-        return false;
+        return settings.containsSetting(name, type);
     }
 
     @Override
     public boolean containsSetting(String name) {
-        return false;
+        return settings.containsSetting(name);
     }
 
     @Override
     public int size() {
-        return 0;
+        return settings.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return settings.isEmpty();
     }
 
     @Override
     public Map<String, SettingGetter> asMap() {
-        return null;
+        return settings.asMap();
+    }
+
+    @Override
+    public Iterator<SettingGetter> iterator() {
+        return settings.iterator();
     }
 }

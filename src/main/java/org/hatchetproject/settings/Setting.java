@@ -1,16 +1,27 @@
 package org.hatchetproject.settings;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
-@XmlRootElement
-public class Setting implements Serializable, SettingGetter {
+@XmlType (name = "setting", propOrder = {"name", "type", "value"})
+public class Setting implements SettingGetter {
 
     private String name;
 
     private Class type;
 
-    private Object value;
+    private Serializable value;
+
+    public Setting() {
+        this(null, null, null);
+    }
+
+    public Setting(String name, Class type, Serializable value) {
+        this.name = name;
+        this.type = type;
+        this.value = value;
+    }
 
     @Override
     public String getName() {
@@ -18,7 +29,7 @@ public class Setting implements Serializable, SettingGetter {
     }
 
     @Override
-    public Object getValue() {
+    public Serializable getValue() {
         return value;
     }
 
@@ -28,11 +39,10 @@ public class Setting implements Serializable, SettingGetter {
     }
 
     public void setType(Class type) {
-
         this.type = type;
     }
 
-    public void setValue(Object value) {
+    public void setValue(Serializable value) {
         this.value = value;
     }
 

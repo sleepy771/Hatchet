@@ -1,5 +1,7 @@
 package org.hatchetproject.settings;
 
+import java.io.Serializable;
+
 /**
  * Created by filip on 7/31/15.
  */
@@ -8,6 +10,13 @@ public class SettingProxy implements SettingGetter {
     private SettingGetter getter;
 
     SettingProxy(SettingGetter settingGetter) {
+        if (settingGetter instanceof SettingProxy) {
+            Setting setting = new Setting();
+            setting.setType(settingGetter.getType());
+            setting.setName(settingGetter.getName());
+            setting.setValue(settingGetter.getValue());
+            this.getter = setting;
+        }
         this.getter = settingGetter;
     }
 
@@ -22,7 +31,7 @@ public class SettingProxy implements SettingGetter {
     }
 
     @Override
-    public Object getValue() {
+    public Serializable getValue() {
         return getter.getValue();
     }
 }

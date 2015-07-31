@@ -2,9 +2,10 @@ package org.hatchetproject.settings;
 
 import org.hatchetproject.TypeValueEntry;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public interface Settings {
+public interface Settings extends Iterable<SettingGetter> {
     Object getValue(String settingName);
 
     <T> T getValue(String settingName, Class<T> type);
@@ -21,11 +22,11 @@ public interface Settings {
 
     boolean addSetting(SettingGetter settingGetter);
 
-    boolean addSetting(String name, Class type, Object value);
+    boolean addSetting(String name, Class type, Serializable value);
 
     SettingGetter setSetting(SettingGetter setting);
 
-    SettingGetter setSetting(String name, Class type, Object value);
+    SettingGetter setSetting(String name, Class type, Serializable value);
 
     boolean addAllSettings(Iterable<SettingGetter> settings);
 

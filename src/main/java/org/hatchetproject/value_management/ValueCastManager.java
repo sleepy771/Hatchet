@@ -6,9 +6,9 @@ import org.hatchetproject.manager.DefaultAbstractManager;
 
 import java.util.Map;
 
-public class ValueCastManager extends DefaultAbstractManager<ValueCastSignature, ValueCast> {
+public final class ValueCastManager extends DefaultAbstractManager<ValueCastSignature, ValueCast> {
 
-    private static Logger LOGGER = Logger.getLogger(ValueCastManager.class);
+    private static final Logger LOGGER = Logger.getLogger(ValueCastManager.class);
 
     private static ValueCastManager INSTANCE;
 
@@ -25,8 +25,9 @@ public class ValueCastManager extends DefaultAbstractManager<ValueCastSignature,
 
     @Override
     protected final boolean postRegister(ValueCastSignature signature, ValueCast cast) {
-        if (castMap.containsKey(cast.getClass()))
+        if (castMap.containsKey(cast.getClass())) {
             return false;
+        }
         castMap.put(cast.getClass(), cast);
         return true;
     }
@@ -37,8 +38,9 @@ public class ValueCastManager extends DefaultAbstractManager<ValueCastSignature,
     }
 
     public final ValueCast getOrCreate(Class<? extends ValueCast> clazz) throws ManagerException {
-        if (castMap.containsKey(clazz))
+        if (castMap.containsKey(clazz)) {
             return castMap.get(clazz);
+        }
         try {
             ValueCast caster = clazz.newInstance();
             register(caster);
@@ -50,18 +52,19 @@ public class ValueCastManager extends DefaultAbstractManager<ValueCastSignature,
     }
 
     public final boolean isRegisteredForKey(Class<? extends ValueCast> clazz) {
-        return clazz != null && castMap.containsKey(clazz);
+        return null != clazz && castMap.containsKey(clazz);
     }
 
     public final boolean isRegistered(Class<? extends ValueCast> casterClass, ValueCast caster) {
-        if (casterClass == null || caster == null)
+        if (null == casterClass || null == caster) {
             return false;
+        }
         ValueCast registered = castMap.get(casterClass);
         return registered.equals(caster);
     }
 
     public static ValueCastManager getInstance() {
-        if (INSTANCE == null) {
+        if (null == INSTANCE) {
             INSTANCE = new ValueCastManager();
         }
         return INSTANCE;
