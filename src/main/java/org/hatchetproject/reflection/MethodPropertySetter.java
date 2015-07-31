@@ -3,11 +3,12 @@ package org.hatchetproject.reflection;
 import org.hatchetproject.annotations.Property;
 import org.hatchetproject.exceptions.PropertyAccessorException;
 import org.hatchetproject.exceptions.PropertySetterException;
+import org.hatchetproject.value_management.RegistrableValue.ValueSignature;
 import org.hatchetproject.value_management.ValueCast;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
+import java.util.Map;
 
 public class MethodPropertySetter extends PropertyAccessorBase implements PropertySetter {
 
@@ -34,6 +35,11 @@ public class MethodPropertySetter extends PropertyAccessorBase implements Proper
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new PropertySetterException("Can not execute method", e);
         }
+    }
+
+    @Override
+    public Map<Integer, ValueSignature> getInjects() {
+        return null;
     }
 
     @Override

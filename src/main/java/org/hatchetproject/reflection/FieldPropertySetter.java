@@ -2,9 +2,11 @@ package org.hatchetproject.reflection;
 
 import org.hatchetproject.exceptions.PropertyAccessorException;
 import org.hatchetproject.exceptions.PropertySetterException;
+import org.hatchetproject.value_management.RegistrableValue.ValueSignature;
 import org.hatchetproject.value_management.ValueCast;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 
 public class FieldPropertySetter extends PropertyAccessorBase implements PropertySetter {
 
@@ -34,6 +36,11 @@ public class FieldPropertySetter extends PropertyAccessorBase implements Propert
         } catch (IllegalAccessException e) {
             throw new PropertySetterException("Invalid access rights", e);
         }
+    }
+
+    @Override
+    public Map<Integer, ValueSignature> getInjects() {
+        return null;
     }
 
     @Override

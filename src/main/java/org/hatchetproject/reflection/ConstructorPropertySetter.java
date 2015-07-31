@@ -2,12 +2,13 @@ package org.hatchetproject.reflection;
 
 import org.hatchetproject.exceptions.PropertyAccessorException;
 import org.hatchetproject.exceptions.PropertySetterException;
+import org.hatchetproject.value_management.RegistrableValue.ValueSignature;
 import org.hatchetproject.value_management.ValueCast;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.util.List;
-
+import java.util.Map;
 
 public class ConstructorPropertySetter extends PropertyAccessorBase implements PropertySetter {
 
@@ -35,6 +36,11 @@ public class ConstructorPropertySetter extends PropertyAccessorBase implements P
         } catch (PropertyAccessorException e) {
             throw new PropertySetterException("Unsucessfull cast", e);
         }
+    }
+
+    @Override
+    public Map<Integer, ValueSignature> getInjects() {
+        return null;
     }
 
     public int getIndex() {

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public final class ParametersBuilder implements AssignedParameters, MutableParameters, Builder<AssignedParameters> {
 
-    private static class AssignedParametersImpl extends AssignedParametersWithSetter {
+    private final static class AssignedParametersImpl extends AssignedParametersWithSetter {
 
         private final Class[] paramTypes;
 

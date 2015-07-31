@@ -274,6 +274,7 @@ public class PropertyBuilder {
                 e.printStackTrace();
             }
         }
+        return null;
     }
 
     static List<PropertyBuilder> createPropertyBuilders(Method method, Property property, Properties properties, InjectDefault inject, InjectMultiple multipleInject) {

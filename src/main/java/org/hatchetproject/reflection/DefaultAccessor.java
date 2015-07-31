@@ -32,4 +32,19 @@ public class DefaultAccessor implements PropertyAccessor {
     public ValueCast getCaster() {
         return caster;
     }
+
+    @Override
+    public boolean hasCaster() {
+        return false;
+    }
+
+    @Override
+    public boolean needsCaster() {
+        return false;
+    }
+
+    @Override
+    public IProperty getProperty() {
+        return null;
+    }
 }
