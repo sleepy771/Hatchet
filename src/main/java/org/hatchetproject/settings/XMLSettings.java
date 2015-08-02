@@ -1,64 +1,86 @@
 package org.hatchetproject.settings;
 
-import org.hatchetproject.TypeValueEntry;
+import org.hatchetproject.exceptions.SettingsException;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class XMLSettings implements Persistent, Settings {
 
-    enum LoadBehavior {
-        OVERRIDE, MERGE, CLEAR;
-    }
-
     private Settings settings;
 
-    private LoadBehavior loadBehavior;
+    private MergeBehavior mergeBehavior;
 
     private InputStream inputStream;
 
     private OutputStream outputStream;
 
-    public LoadBehavior getLoadBehavior() {
-        return loadBehavior;
+    public MergeBehavior getMergeBehavior() {
+        return mergeBehavior;
     }
 
-    public void setLoadBehavior(LoadBehavior loadBehavior) {
-        this.loadBehavior = loadBehavior;
+    public void setMergeBehavior(MergeBehavior mergeBehavior) {
+        this.mergeBehavior = mergeBehavior;
     }
 
     @Override
     public void load() throws Exception {
-        JAXBContext context = JAXBContext.newInstance()
+        if (null == inputStream) {
+            throw new SettingsException();
+        }
+        JAXBContext settingsContext = JAXBContext.newInstance(SettingsList.class);
+        Unmarshaller settingsUnmarshaller = settingsContext.createUnmarshaller();
+        SettingsList settingsList = (SettingsList) settingsUnmarshaller.unmarshal(inputStream);
+        getMergeBehavior().merge(this, settingsList);
+        inputStream.close();
+        inputStream = null;
     }
 
     @Override
     public void setInputStream(InputStream stream) {
-
+        this.inputStream = stream;
     }
 
     @Override
     public void setOutputStream(OutputStream stream) {
-
+        this.outputStream = stream;
     }
 
     @Override
     public OutputStream getOutputStream() {
-        return null;
+        return outputStream;
     }
 
     @Override
     public InputStream getInputStream() {
-        return null;
+        return inputStream;
     }
 
     @Override
     public void save() throws Exception {
-
+        if (null != outputStream) {
+            SettingsList list = new SettingsList();
+            List<Setting> settingList = new ArrayList<>();
+            for (SettingGetter getter : this) {
+                settingList.add(new Setting(getter));
+            }
+            list.setSettings(settingList);
+            JAXBContext settingsContext = JAXBContext.newInstance(SettingsList.class);
+            Marshaller settingsMarshaller = settingsContext.createMarshaller();
+            settingsMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            settingsMarshaller.marshal(list, outputStream);
+            outputStream.close();
+            outputStream = null;
+        }
+        throw new SettingsException();
     }
 
     @Override

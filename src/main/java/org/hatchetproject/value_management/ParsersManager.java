@@ -1,12 +1,9 @@
 package org.hatchetproject.value_management;
 
-import org.hatchetproject.annotations.InjectDefault;
 import org.hatchetproject.exceptions.ManagerException;
 import org.hatchetproject.exceptions.ParserException;
 import org.hatchetproject.manager.DefaultAbstractManager;
-import org.hatchetproject.utils.HatchetInspectionUtils;
 
-import java.util.Map;
 
 public class ParsersManager extends DefaultAbstractManager<String, HatchetParser> {
 
@@ -55,5 +52,9 @@ public class ParsersManager extends DefaultAbstractManager<String, HatchetParser
         } catch (ManagerException e) {
             throw new ParserException("Class not found", e);
         }
+    }
+
+    public boolean canParse(Class valueClass) {
+        return containsKey(valueClass.getName());
     }
 }

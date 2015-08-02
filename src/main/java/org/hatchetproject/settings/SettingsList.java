@@ -2,7 +2,6 @@ package org.hatchetproject.settings;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;

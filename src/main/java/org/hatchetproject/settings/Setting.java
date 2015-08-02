@@ -1,8 +1,10 @@
 package org.hatchetproject.settings;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.hatchetproject.exceptions.MarshalException;
+
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import java.io.Serializable;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlType (name = "setting", propOrder = {"name", "type", "value"})
 public class Setting implements SettingGetter {
@@ -11,13 +13,17 @@ public class Setting implements SettingGetter {
 
     private Class type;
 
-    private Serializable value;
+    private Object value;
+
+    public Setting(SettingGetter getter) {
+        this(getter.getName(), getter.getType(), getter.getValue());
+    }
 
     public Setting() {
         this(null, null, null);
     }
 
-    public Setting(String name, Class type, Serializable value) {
+    public Setting(String name, Class type, Object value) {
         this.name = name;
         this.type = type;
         this.value = value;
@@ -29,7 +35,8 @@ public class Setting implements SettingGetter {
     }
 
     @Override
-    public Serializable getValue() {
+    @XmlJavaTypeAdapter(ParsableObjectAdapter.class)
+    public Object getValue() {
         return value;
     }
 
@@ -42,7 +49,7 @@ public class Setting implements SettingGetter {
         this.type = type;
     }
 
-    public void setValue(Serializable value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 
@@ -52,6 +59,7 @@ public class Setting implements SettingGetter {
     }
 
     @Override
+    @XmlTransient
     public String toString() {
         return "Setting{" +
                 "name='" + name + '\'' +
@@ -61,6 +69,7 @@ public class Setting implements SettingGetter {
     }
 
     @Override
+    @XmlTransient
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -75,6 +84,7 @@ public class Setting implements SettingGetter {
     }
 
     @Override
+    @XmlTransient
     public int hashCode() {
         int result = name.hashCode();
         result = 31 * result + type.hashCode();

@@ -9,8 +9,12 @@ public class SettingsImpl implements Settings {
 
     private final Map<String, SettingGetter> getterMap;
 
-    public SettingsImpl(final Iterable<SettingGetter> list) {
+    public SettingsImpl() {
         this.getterMap = new HashMap<>();
+    }
+
+    public SettingsImpl(final Iterable<SettingGetter> list) {
+        this();
         for (SettingGetter getter : list) {
             this.getterMap.put(getter.getName(), getter);
         }

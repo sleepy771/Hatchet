@@ -6,6 +6,27 @@ import java.io.Serializable;
 import java.util.Map;
 
 public interface Settings extends Iterable<SettingGetter> {
+
+    enum MergeBehavior {
+        OVERRIDE, MERGE, CLEAR;
+
+        void merge(Settings settings, Iterable<SettingGetter> settingGetters) {
+            switch (this) {
+                case OVERRIDE:
+                    settings.setAllSettings(settingGetters);
+                    break;
+                case MERGE:
+                    settings.addAllSettings(settingGetters);
+                    break;
+                case CLEAR:
+                    settings.clear();
+                    settings.addAllSettings(settingGetters);
+                    break;
+            }
+            throw new IllegalArgumentException("Invalid enum type");
+        }
+    }
+
     Object getValue(String settingName);
 
     <T> T getValue(String settingName, Class<T> type);

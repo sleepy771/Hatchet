@@ -11,5 +11,5 @@ public interface SettingGetter extends Serializable {
 
     Class getType();
 
-    Serializable getValue();
+   Object getValue();
 }

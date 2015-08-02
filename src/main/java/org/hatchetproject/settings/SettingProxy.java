@@ -31,7 +31,7 @@ public class SettingProxy implements SettingGetter {
     }
 
     @Override
-    public Serializable getValue() {
+    public Object getValue() {
         return getter.getValue();
     }
 }
