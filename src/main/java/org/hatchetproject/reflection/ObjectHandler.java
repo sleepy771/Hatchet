@@ -13,7 +13,7 @@ public interface ObjectHandler<T> {
 
     void addAllPropertyGetters(Collection<PropertyGetter> getters);
 
-    boolean isObjectProperty(IProperty property);
+    boolean isObjectProperty(PropertyMeta property);
 
     void setObjectBuilder(ObjectBuilder<T> builder);
 

@@ -1,7 +1,7 @@
 package org.hatchetproject.reflection;
 
 import org.hatchetproject.annotations.InjectDefault;
-import org.hatchetproject.annotations.Property;
+import org.hatchetproject.annotations.IsProperty;
 
 /**
  * Created by filip on 7/5/15.
@@ -10,7 +10,7 @@ public class PositionedValue {
 
     private InjectDefault injectDefault;
 
-    private Property property;
+    private IsProperty isProperty;
 
     private int index;
 
@@ -18,8 +18,8 @@ public class PositionedValue {
         this(inject.index() > -1 ? inject.index() : -1, inject);
     }
 
-    public PositionedValue(Property property) {
-        this(property.index() > -1 ? property.index() : -1, property);
+    public PositionedValue(IsProperty isProperty) {
+        this(isProperty.index() > -1 ? isProperty.index() : -1, isProperty);
     }
 
     public PositionedValue(int position, InjectDefault inject) {
@@ -27,9 +27,9 @@ public class PositionedValue {
         this.injectDefault = inject;
     }
 
-    public PositionedValue(int position, Property property) {
+    public PositionedValue(int position, IsProperty isProperty) {
         this.index = position;
-        this.property = property;
+        this.isProperty = isProperty;
     }
 
     public int getIndex() {
@@ -48,15 +48,15 @@ public class PositionedValue {
         return this.injectDefault != null;
     }
 
-    public boolean isProperty() {
-        return this.property != null;
+    public boolean getIsProperty() {
+        return this.isProperty != null;
     }
 
     public InjectDefault getInject() {
         return injectDefault;
     }
 
-    public Property getProperty() {
-        return property;
+    public IsProperty getProperty() {
+        return isProperty;
     }
 }

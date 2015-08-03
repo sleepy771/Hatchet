@@ -5,17 +5,16 @@ import org.hatchetproject.exceptions.PropertySetterException;
 import org.hatchetproject.value_management.RegistrableValue.ValueSignature;
 import org.hatchetproject.value_management.ValueCast;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
 public class MultiPropertySetter extends PropertyAccessorBase implements PropertySetter {
 
     private int index;
-    private IProperty property;
+    private PropertyMeta property;
     private Class valueClass;
 
-    protected MultiPropertySetter(ValueCast caster, Class valueClass, IProperty property) throws PropertyAccessorException {
+    protected MultiPropertySetter(ValueCast caster, Class valueClass, PropertyMeta property) throws PropertyAccessorException {
         super(caster, AccessorType.SETTER);
         this.valueClass = valueClass;
         this.property = property;
@@ -52,7 +51,7 @@ public class MultiPropertySetter extends PropertyAccessorBase implements Propert
     }
 
     @Override
-    public IProperty getProperty() {
+    public PropertyMeta getProperty() {
         return property;
     }
 }

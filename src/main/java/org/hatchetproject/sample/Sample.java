@@ -1,9 +1,9 @@
 package org.hatchetproject.sample;
 
+import org.hatchetproject.annotations.HasProperties;
 import org.hatchetproject.annotations.InjectDefault;
 import org.hatchetproject.annotations.InjectMultiple;
-import org.hatchetproject.annotations.Properties;
-import org.hatchetproject.annotations.Property;
+import org.hatchetproject.annotations.IsProperty;
 
 public class Sample {
 
@@ -15,57 +15,57 @@ public class Sample {
 
     private float longitude, latitude;
 
-    @Property
+    @IsProperty
     public String info;
 
     @InjectMultiple({
             @InjectDefault(),
             @InjectDefault()
     })
-    @Property(name = "name", index = 0)
+    @IsProperty(name = "name", index = 0)
     public Sample(String name, int age, String info) {
         this.name = name;
         this.age = age;
         this.info = info;
     }
 
-    @Property
+    @IsProperty
     public String getName() {
         return this.name;
     }
 
-    @Property
+    @IsProperty
     public int getAge() {
         return this.age;
     }
 
-    @Property
+    @IsProperty
     public int getWidth() {
         return this.width;
     }
 
-    @Property
+    @IsProperty
     public int getHeight() {
         return this.height;
     }
 
-    @Properties({@Property(name = "width"), @Property(name = "height")})
+    @HasProperties({@IsProperty(name = "width"), @IsProperty(name = "height")})
     public void setSize(int width, int height) {
         this.width = width;
         this.height = height;
     }
 
-    @Property
+    @IsProperty
     public float getLongitude() {
         return this.longitude;
     }
 
-    @Property
+    @IsProperty
     public float getLatitude() {
         return this.latitude;
     }
 
-    @Properties({@Property(name = "latitude", index = 1), @Property(name = "longitude", index = 0)})
+    @HasProperties({@IsProperty(name = "latitude", index = 1), @IsProperty(name = "longitude", index = 0)})
     public void setPosition(float longitude, float latitude) {
         this.longitude = longitude;
         this.latitude = latitude;

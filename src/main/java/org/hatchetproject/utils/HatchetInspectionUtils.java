@@ -1,6 +1,6 @@
 package org.hatchetproject.utils;
 
-import org.hatchetproject.annotations.Property;
+import org.hatchetproject.annotations.IsProperty;
 import org.hatchetproject.reflection.Signature;
 
 import java.lang.reflect.Constructor;
@@ -76,10 +76,10 @@ public class HatchetInspectionUtils {
         throw new IllegalArgumentException("Wrong property name");
     }
 
-    public static String createMethodPropertyName(Method method, Property property) {
-        if (property == null)
+    public static String createMethodPropertyName(Method method, IsProperty isProperty) {
+        if (isProperty == null)
             throw new NullPointerException();
-        return createPropertyName(method.getName(), property.name());
+        return createPropertyName(method.getName(), isProperty.name());
     }
 
     public static boolean isAccessibleConstructor(Constructor constructor) {

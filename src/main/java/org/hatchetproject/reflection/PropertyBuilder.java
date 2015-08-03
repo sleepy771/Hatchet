@@ -1,11 +1,10 @@
 package org.hatchetproject.reflection;
 
-import javafx.geometry.Pos;
 import org.apache.log4j.Logger;
+import org.hatchetproject.annotations.HasProperties;
 import org.hatchetproject.annotations.InjectDefault;
 import org.hatchetproject.annotations.InjectMultiple;
-import org.hatchetproject.annotations.Properties;
-import org.hatchetproject.annotations.Property;
+import org.hatchetproject.annotations.IsProperty;
 import org.hatchetproject.exceptions.ManagerException;
 import org.hatchetproject.exceptions.PropertyAccessorException;
 import org.hatchetproject.reflection.constants.AsSelf;
@@ -116,25 +115,25 @@ public class PropertyBuilder {
     }
 
     @SuppressWarnings("unchecked")
-    static PropertyBuilder createPropertyBuilder(Field field, Property fieldProperty) {
-        if (!HatchetInspectionUtils.isValidPropertyName(fieldProperty.name())) {
+    static PropertyBuilder createPropertyBuilder(Field field, IsProperty fieldIsProperty) {
+        if (!HatchetInspectionUtils.isValidPropertyName(fieldIsProperty.name())) {
             logger.error("Invalid property name, was set");
             throw new IllegalArgumentException();
         }
-        if (fieldProperty.index() != -1) {
+        if (fieldIsProperty.index() != -1) {
             logger.warn("Unsupported operating: index in field property was changed from default -1");
         }
-        String name = "-".equals(fieldProperty.name()) ? field.getName() : fieldProperty.name();
+        String name = "-".equals(fieldIsProperty.name()) ? field.getName() : fieldIsProperty.name();
         Class type = null;
         ValueCast caster = null;
-        if (fieldProperty.type() != AsSelf.class) {
-            type = fieldProperty.type();
+        if (fieldIsProperty.type() != AsSelf.class) {
+            type = fieldIsProperty.type();
             try {
-                if (fieldProperty.caster() == UndefinedValueCast.class) {
-                    caster = ValueCastManager.getInstance().get(new ValueCastSignature(field.getType(), fieldProperty.type()));
+                if (fieldIsProperty.caster() == UndefinedValueCast.class) {
+                    caster = ValueCastManager.getInstance().get(new ValueCastSignature(field.getType(), fieldIsProperty.type()));
                 } else {
-                    caster = ValueCastManager.getInstance().getOrCreate(fieldProperty.caster());
-                    if (!(caster.getInputType().isAssignableFrom(field.getType()) && fieldProperty.type().isAssignableFrom(caster.getOutputType()))) {
+                    caster = ValueCastManager.getInstance().getOrCreate(fieldIsProperty.caster());
+                    if (!(caster.getInputType().isAssignableFrom(field.getType()) && fieldIsProperty.type().isAssignableFrom(caster.getOutputType()))) {
                         throw new IllegalArgumentException(); // propertyException
                     }
                 }
@@ -159,10 +158,10 @@ public class PropertyBuilder {
         return builder;
     }
 
-    static PropertyBuilder createPropertyBuilder(Method method, Property property) {
-        if (!HatchetInspectionUtils.isValidPropertyName(property.name()))
-            throw new IllegalArgumentException("Invalid property name");
-        String name = HatchetInspectionUtils.createMethodPropertyName(method, property);
+    static PropertyBuilder createPropertyBuilder(Method method, IsProperty isProperty) {
+        if (!HatchetInspectionUtils.isValidPropertyName(isProperty.name()))
+            throw new IllegalArgumentException("Invalid isProperty name");
+        String name = HatchetInspectionUtils.createMethodPropertyName(method, isProperty);
         Class type = null;
         ValueCast caster = null;
         Class methodAttrType = null;
@@ -171,25 +170,25 @@ public class PropertyBuilder {
             methodAttrType = method.getReturnType();
             propertyType = 1;
         } else if (HatchetInspectionUtils.isAccessibleSetter(method)) {
-            int idx = Math.max(property.index(), 0);
+            int idx = Math.max(isProperty.index(), 0);
             methodAttrType = method.getParameterTypes()[idx];
             propertyType = 2;
         }
-        if (property.type() == AsSelf.class) {
+        if (isProperty.type() == AsSelf.class) {
             type = methodAttrType;
         } else {
-            type = property.type();
+            type = isProperty.type();
             try {
-                if (property.caster() == UndefinedValueCast.class) {
+                if (isProperty.caster() == UndefinedValueCast.class) {
                     Class fromClass = null;
                     Class toClass = null;
                     switch (propertyType) {
                         case 1:
                             fromClass = methodAttrType;
-                            toClass = property.type();
+                            toClass = isProperty.type();
                             break;
                         case 2:
-                            fromClass = property.type();
+                            fromClass = isProperty.type();
                             toClass = methodAttrType;
                             break;
                         default:
@@ -197,7 +196,7 @@ public class PropertyBuilder {
                     }
                     caster = ValueCastManager.getInstance().get(new ValueCastSignature(fromClass, toClass));
                 } else {
-                    caster = ValueCastManager.getInstance().getOrCreate(property.caster());
+                    caster = ValueCastManager.getInstance().getOrCreate(isProperty.caster());
                 }
             } catch (ManagerException e) {
                 e.printStackTrace();
@@ -222,20 +221,20 @@ public class PropertyBuilder {
         return builder;
     }
 
-    static List<PropertyBuilder> createPropertyBuilders(Constructor constructor, Property property, Properties properties, InjectDefault injectDefault, InjectMultiple injectMultiple) {
+    static List<PropertyBuilder> createPropertyBuilders(Constructor constructor, IsProperty isProperty, HasProperties hasProperties, InjectDefault injectDefault, InjectMultiple injectMultiple) {
         if(!HatchetInspectionUtils.isAccessibleConstructor(constructor))
             throw new IllegalArgumentException();
         PositionedValue[] values = new PositionedValue[constructor.getParameterCount()];
         int idx = 0;
         int propSize = 0;
-        Set<Property> constructroProperies = new HashSet<>();
-        if (property != null) {
-            idx = add(idx, values, new PositionedValue(property));
-            constructroProperies.add(property);
+        Set<IsProperty> constructroProperies = new HashSet<>();
+        if (isProperty != null) {
+            idx = add(idx, values, new PositionedValue(isProperty));
+            constructroProperies.add(isProperty);
             propSize++;
         }
-        if (properties != null) {
-            for (Property prop : properties.value()) {
+        if (hasProperties != null) {
+            for (IsProperty prop : hasProperties.value()) {
                 idx = add(idx, values, new PositionedValue(prop));
                 constructroProperies.add(prop);
                 propSize++;
@@ -254,21 +253,21 @@ public class PropertyBuilder {
         return null;
     }
 
-    static PropertyBuilder createPropertyBuilder(Constructor constructor, Property property, int index) {
-        if ("".equals(property.name().trim())) {
+    static PropertyBuilder createPropertyBuilder(Constructor constructor, IsProperty isProperty, int index) {
+        if ("".equals(isProperty.name().trim())) {
             throw new IllegalArgumentException();
         }
         ValueCast caster = null;
         Class type = null;
-        if (property.type() == AsSelf.class) {
+        if (isProperty.type() == AsSelf.class) {
             type = constructor.getParameterTypes()[index];
         } else {
-            type = property.type();
+            type = isProperty.type();
             try {
-                if (property.caster() == UndefinedValueCast.class) {
+                if (isProperty.caster() == UndefinedValueCast.class) {
                     caster = ValueCastManager.getInstance().get(new ValueCastSignature(type, constructor.getParameterTypes()[index]));
                 } else {
-                    caster = ValueCastManager.getInstance().getOrCreate(property.caster());
+                    caster = ValueCastManager.getInstance().getOrCreate(isProperty.caster());
                 }
             } catch (ManagerException e) {
                 e.printStackTrace();
@@ -277,18 +276,18 @@ public class PropertyBuilder {
         return null;
     }
 
-    static List<PropertyBuilder> createPropertyBuilders(Method method, Property property, Properties properties, InjectDefault inject, InjectMultiple multipleInject) {
+    static List<PropertyBuilder> createPropertyBuilders(Method method, IsProperty isProperty, HasProperties hasProperties, InjectDefault inject, InjectMultiple multipleInject) {
         if (!HatchetInspectionUtils.isAccessibleSetter(method))
             throw new IllegalArgumentException();
         PositionedValue[] values = new PositionedValue[method.getParameterCount()];
         int idx = 0;
         int propSize = 0;
-        if (property != null) {
-            idx = add(idx, values, new PositionedValue(property));
+        if (isProperty != null) {
+            idx = add(idx, values, new PositionedValue(isProperty));
             propSize++;
         }
-        if (properties != null) {
-            for (Property prop : properties.value()) {
+        if (hasProperties != null) {
+            for (IsProperty prop : hasProperties.value()) {
                 idx = add(idx, values, new PositionedValue(prop));
                 propSize++;
             }
@@ -306,7 +305,7 @@ public class PropertyBuilder {
 
         List<PropertyBuilder> builders = new ArrayList<>(method.getParameterCount());
         for (PositionedValue value : values) {
-            if (value.isProperty()) {
+            if (value.getIsProperty()) {
                 builders.add(createPropertyBuilder(method, value.getProperty()));
             }
         }

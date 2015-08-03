@@ -3,9 +3,6 @@ package org.hatchetproject.reflection;
 import org.hatchetproject.value_management.ValueCast;
 
 public interface PropertyAccessor {
-
-    Class getDeclaringClass();
-
     Class getValueClass();
 
     ValueCast getCaster();
@@ -14,5 +11,9 @@ public interface PropertyAccessor {
 
     boolean needsCaster();
 
-    IProperty getProperty();
+    PropertyMeta getProperty();
+
+    PropertyGetter getPropertyGetter();
+
+    PropertySetter getPropertySetter();
 }

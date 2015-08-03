@@ -28,12 +28,13 @@ public class PropertyMap {
 
     @SuppressWarnings("unchecked")
     public void set(Signature signature, Object value) {
-        if (isChangeLocked())
+        if (isChangeLocked()) {
             throw new IllegalArgumentException();
+        }
         if (!scheme.canAssign(signature)) {
             throw new IllegalArgumentException();
         }
-        if (value == null) {
+        if (null == value) {
             if (!scheme.canAssignEmpty(signature)) {
                 throw new IllegalArgumentException();
             }

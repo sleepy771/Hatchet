@@ -2,7 +2,7 @@ package org.hatchetproject.reflection;
 
 public class PropertySignature extends SignatureBase<PropertySignature> implements Signature {
 
-    public PropertySignature(IProperty property) {
+    public PropertySignature(PropertyMeta property) {
         this(property.getName(), property.getPropertyType(), property.getDeclaringClass());
     }
 

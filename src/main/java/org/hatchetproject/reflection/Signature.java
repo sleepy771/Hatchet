@@ -3,11 +3,8 @@ package org.hatchetproject.reflection;
 /**
  * Created by filip on 6/28/15.
  */
-public interface Signature {
+public interface Signature extends Classy {
     String getName();
-    Class getReturnType();
-    Class[] getParameterTypes();
-    Class getParameterType(int idx);
-    int getParametersCount();
-    Class getDeclaringClass();
+
+    Class getType();
 }

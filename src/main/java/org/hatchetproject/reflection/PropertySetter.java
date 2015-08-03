@@ -1,12 +1,12 @@
 package org.hatchetproject.reflection;
 
 import org.hatchetproject.exceptions.PropertySetterException;
-import org.hatchetproject.value_management.RegistrableValue.ValueSignature;
+import org.hatchetproject.reflection.accessors.Setter;
 
-import java.util.Map;
-
-public interface PropertySetter extends PropertyAccessor {
+public interface PropertySetter {
     void set(Object destination, Object value) throws PropertySetterException;
 
-    Map<Integer, ValueSignature> getInjects();
+    int getIndex(); // Maybe setterHelper would be better, lika callback
+
+    Setter getSetter();
 }

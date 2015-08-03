@@ -1,6 +1,6 @@
 package org.hatchetproject.value_management.inject_default;
 
-import org.hatchetproject.reflection.Setter;
+import org.hatchetproject.reflection.accessors.Setter;
 
 import java.lang.reflect.InvocationTargetException;
 

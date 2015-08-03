@@ -2,6 +2,7 @@ package org.hatchetproject.value_management.inject_default;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.hatchetproject.Builder;
+import org.hatchetproject.exceptions.ParametersException;
 import org.hatchetproject.utils.HatchetCollectionsManipulation;
 
 import java.lang.reflect.Constructor;
@@ -450,10 +451,22 @@ public final class ParametersBuilder implements AssignedParameters, MutableParam
     }
 
     @Override
-    public AssignedParameters build() {
+    public AssignedParameters build() throws ParametersException {
         if (!isFilled()) {
-            throw new UnsupportedOperationException("Can't build paramteres until not set all");
+            throw new ParametersException("Parameters not assigned yet");
         }
         return new AssignedParametersImpl(type, getDeclaringClass(), getName(), parameterTypes, values);
+    }
+
+    public Field getField() {
+        return field;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public Constructor getConstructor() {
+        return constructor;
     }
 }

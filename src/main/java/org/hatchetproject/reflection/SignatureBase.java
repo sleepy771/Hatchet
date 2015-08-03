@@ -1,6 +1,6 @@
 package org.hatchetproject.reflection;
 
-public abstract class SignatureBase<T extends Signature> implements Signature {
+public abstract class SignatureBase<T extends AccessorSignature> implements AccessorSignature {
 
     private final String name;
     private final Class type;
@@ -38,22 +38,24 @@ public abstract class SignatureBase<T extends Signature> implements Signature {
     }
 
     @Override
-    public final int getParametersCount() {
+    public final int getParameterCount() {
         return paramTypes.length;
     }
 
     @Override
     public final Class getParameterType(int idx) {
-        if (idx >= 0 && idx < paramTypes.length)
+        if (0 <= idx && idx < paramTypes.length) {
             throw new IndexOutOfBoundsException("Index " + idx + " is not in set {" + 0 + ", ..., " + paramTypes.length + "}");
+        }
         return paramTypes[idx];
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public final boolean equals(Object o) {
-        if (o == null || o.hashCode() != hashCode() || !getClass().equals(o.getClass()))
+        if (null == o || o.hashCode() != hashCode() || !getClass().equals(o.getClass())) {
             return false;
+        }
         T otherSignature = (T) o;
         return this.declaringClass == otherSignature.getDeclaringClass()
                 && this.name.equals(otherSignature.getName())
@@ -63,18 +65,20 @@ public abstract class SignatureBase<T extends Signature> implements Signature {
     }
 
     private boolean parametersEquals(T signature) {
-        if (signature.getParametersCount() != getParametersCount())
+        if (signature.getParameterCount() != getParameterCount()) {
             return false;
+        }
         for (int k = 0; k < paramTypes.length; k++) {
-            if (paramTypes[k] != signature.getParameterType(k))
+            if (paramTypes[k] != signature.getParameterType(k)) {
                 return false;
+            }
         }
         return true;
     }
 
     @Override
     public final int hashCode() {
-        if (hashCode == 0) {
+        if (0 == hashCode) {
             int hash = 17;
             hash = hash * 31 + declaringClass.hashCode();
             hash = hash * 31 + name.hashCode();
@@ -116,6 +120,6 @@ public abstract class SignatureBase<T extends Signature> implements Signature {
     }
 
     protected String propertyTypeName() {
-        return "Property";
+        return "IsProperty";
     }
 }

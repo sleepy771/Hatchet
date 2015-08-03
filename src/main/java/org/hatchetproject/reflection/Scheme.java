@@ -35,7 +35,7 @@ public interface Scheme extends Releasable, Classy {
 
     Set<Signature> getFieldProperties();
 
-    Map<Signature, IProperty> getPropertyMap();
+    Map<Signature, PropertyMeta> getPropertyMap();
 
     List<Class> getConstructorArguments();
 

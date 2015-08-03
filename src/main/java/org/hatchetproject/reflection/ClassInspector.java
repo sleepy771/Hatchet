@@ -1,10 +1,10 @@
 package org.hatchetproject.reflection;
 
+import org.hatchetproject.annotations.HasProperties;
 import org.hatchetproject.annotations.InjectDefault;
 import org.hatchetproject.annotations.InjectMultiple;
+import org.hatchetproject.annotations.IsProperty;
 import org.hatchetproject.annotations.Prefer;
-import org.hatchetproject.annotations.Properties;
-import org.hatchetproject.annotations.Property;
 import org.hatchetproject.exceptions.InspectionException;
 import org.hatchetproject.utils.HatchetInspectionUtils;
 
@@ -39,8 +39,8 @@ public class ClassInspector {
             add(InjectDefault.class);
             add(InjectMultiple.class);
             add(Prefer.class);
-            add(Properties.class);
-            add(Property.class);
+            add(HasProperties.class);
+            add(IsProperty.class);
         }
     };
 
@@ -91,10 +91,10 @@ public class ClassInspector {
         getters = new ArrayList<>();
         addFlag(Flag.INSPECTED_METHODS);
         for (Method method : clazz.getMethods()) {
-            Property methodProperty = method.getAnnotation(Property.class);
+            IsProperty methodIsProperty = method.getAnnotation(IsProperty.class);
             if (!HatchetInspectionUtils.isPublic(method)) {
                 addFlag(Flag.INVALID);
-                throw new InspectionException("Method defines Property annotation, but is not public");
+                throw new InspectionException("Method defines IsProperty annotation, but is not public");
             }
             if (HatchetInspectionUtils.isSetter(method)) {
                 setters.add(method);
@@ -131,22 +131,22 @@ public class ClassInspector {
         injectDefaultFields = new ArrayList<>();
         addFlag(Flag.INSPECTED_FIELDS);
         for (Field field : clazz.getFields()) {
-            Property fieldProperty = field.getAnnotation(Property.class);
+            IsProperty fieldIsProperty = field.getAnnotation(IsProperty.class);
             InjectDefault injectDefault = field.getAnnotation(InjectDefault.class);
-            if (fieldProperty != null || injectDefault != null) {
+            if (fieldIsProperty != null || injectDefault != null) {
                 if (!HatchetInspectionUtils.isPublic(field)) {
                     addFlag(Flag.INVALID);
                     throw new InspectionException("Field is not public");
                 }
-                if (fieldProperty != null ^ injectDefault != null) {
-                    if (fieldProperty != null) {
+                if (fieldIsProperty != null ^ injectDefault != null) {
+                    if (fieldIsProperty != null) {
                         propertyFields.add(field);
                         continue;
                     }
                     injectDefaultFields.add(field);
                 } else {
                     addFlag(Flag.INVALID);
-                    throw new InspectionException("Field can not define both InjectDefault and Property annotation.");
+                    throw new InspectionException("Field can not define both InjectDefault and IsProperty annotation.");
                 }
             }
         }

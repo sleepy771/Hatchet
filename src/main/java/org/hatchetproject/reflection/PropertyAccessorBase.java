@@ -6,7 +6,7 @@ import org.hatchetproject.value_management.ValueCast;
 
 public abstract class PropertyAccessorBase implements PropertyAccessor {
     private ValueCast caster;
-    private AccessorType type;
+    private final AccessorType type;
     private Boolean needsCaster;
 
     protected PropertyAccessorBase(ValueCast caster, AccessorType type) throws PropertyAccessorException {
@@ -21,13 +21,13 @@ public abstract class PropertyAccessorBase implements PropertyAccessor {
 
     @Override
     public final boolean hasCaster() {
-        return caster != null;
+        return null != caster;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public final boolean needsCaster() {
-        if (needsCaster == null) {
+        if (null == needsCaster) {
             switch (this.type) {
                 case GETTER:
                     needsCaster = getProperty().getPropertyType().isAssignableFrom(getValueClass());
@@ -57,13 +57,14 @@ public abstract class PropertyAccessorBase implements PropertyAccessor {
     }
 
     protected final void validateCaster() throws PropertyAccessorException {
-        if (needsCaster() && !hasCaster())
+        if (needsCaster() && !hasCaster()) {
             throw new PropertyAccessorException();
+        }
     }
 
     @SuppressWarnings("unchecked")
     protected final void setCaster(ValueCast caster) throws PropertyAccessorException {
-        if (caster == null) {
+        if (null == caster) {
             if (!needsCaster()) {
                 this.caster = null;
                 return;
