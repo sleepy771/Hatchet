@@ -6,6 +6,7 @@ import org.hatchetproject.annotations.InjectMultiple;
 import org.hatchetproject.annotations.IsProperty;
 import org.hatchetproject.annotations.Prefer;
 import org.hatchetproject.exceptions.InspectionException;
+import org.hatchetproject.reflection.meta.signatures.Signature;
 import org.hatchetproject.utils.HatchetInspectionUtils;
 
 import java.lang.annotation.Annotation;

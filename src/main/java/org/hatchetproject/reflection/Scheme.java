@@ -1,6 +1,9 @@
 package org.hatchetproject.reflection;
 
 import org.hatchetproject.manager.memory.Releasable;
+import org.hatchetproject.reflection.meta.signatures.Classy;
+import org.hatchetproject.reflection.meta.signatures.PropertyMeta;
+import org.hatchetproject.reflection.meta.signatures.Signature;
 import org.hatchetproject.value_management.ValueCast;
 
 import java.util.List;

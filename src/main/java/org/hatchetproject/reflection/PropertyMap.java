@@ -1,5 +1,6 @@
 package org.hatchetproject.reflection;
 
+import org.hatchetproject.reflection.meta.signatures.Signature;
 import org.hatchetproject.utils.HatchetCollectionsManipulation;
 
 import java.util.HashMap;

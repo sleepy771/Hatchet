@@ -1,4 +1,4 @@
-package org.hatchetproject.reflection;
+package org.hatchetproject.reflection.meta.signatures;
 
 public class PropertyMeta implements Signature {
 

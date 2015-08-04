@@ -1,6 +1,7 @@
 package org.hatchetproject.reflection;
 
 import net.sf.cglib.proxy.FixedValue;
+import org.hatchetproject.reflection.meta.signatures.MethodMeta;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -25,7 +26,7 @@ public interface ProxyCallback {
         }
     }
 
-    MethodSignature getSignature();
+    MethodMeta getSignature();
 
     Object execute(Object instance, Object... parameters) throws Exception;
 

@@ -1,5 +1,6 @@
 package org.hatchetproject.reflection.accessors;
 
+import org.hatchetproject.reflection.meta.signatures.AccessorMeta;
 import org.hatchetproject.value_management.inject_default.ParametersBuilder;
 
 import java.util.List;
@@ -13,6 +14,8 @@ public interface AccessorExecutor extends Invokable {
     void setBuilder(ParametersBuilder builder);
 
     void newParametersBuilder();
+
+    AccessorMeta getSignature();
 
     void setParameter(int index, Object value);
 

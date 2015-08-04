@@ -1,6 +1,6 @@
-package org.hatchetproject.reflection;
+package org.hatchetproject.reflection.meta.signatures;
 
-public abstract class SignatureBase<T extends AccessorSignature> implements AccessorSignature {
+public abstract class AccessorMetaBase<T extends AccessorMeta> implements AccessorMeta {
 
     private final String name;
     private final Class type;
@@ -8,7 +8,7 @@ public abstract class SignatureBase<T extends AccessorSignature> implements Acce
     private final Class[] paramTypes;
     private volatile int hashCode;
 
-    protected SignatureBase(String name, Class type, Class[] paramTypes, Class declaringClass) {
+    protected AccessorMetaBase(String name, Class type, Class[] paramTypes, Class declaringClass) {
         this.name = name;
         this.type = type;
         this.paramTypes = paramTypes;
@@ -21,7 +21,7 @@ public abstract class SignatureBase<T extends AccessorSignature> implements Acce
     }
 
     @Override
-    public final Class getReturnType() {
+    public final Class getType() {
         return type;
     }
 
@@ -59,7 +59,7 @@ public abstract class SignatureBase<T extends AccessorSignature> implements Acce
         T otherSignature = (T) o;
         return this.declaringClass == otherSignature.getDeclaringClass()
                 && this.name.equals(otherSignature.getName())
-                && this.type == otherSignature.getReturnType()
+                && this.type == otherSignature.getType()
                 && parametersEquals(otherSignature)
                 && equals(otherSignature);
     }
@@ -84,7 +84,6 @@ public abstract class SignatureBase<T extends AccessorSignature> implements Acce
             hash = hash * 31 + name.hashCode();
             hash = hash * 31 + type.hashCode();
             hash = hash * 31 + hashParameters();
-            hash = hash * 31 + additionalHash();
             hashCode = hash;
         }
         return hashCode;
@@ -92,7 +91,7 @@ public abstract class SignatureBase<T extends AccessorSignature> implements Acce
 
     @Override
     public final String toString() {
-        return propertyTypeName() + ": {\n\tname = " + name + ";\n\ttype = "
+        return getAccessorMetaType().getName() + ": {\n\tname = " + name + ";\n\ttype = "
                 + type.getName() + ";\n\tdeclaringClass = "
                 + declaringClass.getName() + ";\n"
                 + additionalDescription() + "}";
@@ -106,10 +105,6 @@ public abstract class SignatureBase<T extends AccessorSignature> implements Acce
         return seed;
     }
 
-    protected int additionalHash() {
-        return 0;
-    }
-
     protected boolean equals(T signature) {
         return true;
     }
@@ -117,9 +112,5 @@ public abstract class SignatureBase<T extends AccessorSignature> implements Acce
 
     protected String additionalDescription() {
         return "";
-    }
-
-    protected String propertyTypeName() {
-        return "IsProperty";
     }
 }

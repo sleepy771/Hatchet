@@ -1,8 +1,8 @@
 package org.hatchetproject.reflection;
 
 import org.hatchetproject.exceptions.PropertySetterException;
+import org.hatchetproject.reflection.meta.signatures.Signature;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

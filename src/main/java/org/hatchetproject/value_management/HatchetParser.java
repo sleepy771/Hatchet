@@ -1,6 +1,6 @@
 package org.hatchetproject.value_management;
 
-import org.hatchetproject.reflection.Classy;
+import org.hatchetproject.reflection.meta.signatures.Classy;
 
 public abstract class HatchetParser<Type> implements Classy {
 

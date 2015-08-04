@@ -1,16 +1,16 @@
-package org.hatchetproject.reflection;
+package org.hatchetproject.reflection.meta.signatures;
 
 import org.hatchetproject.exceptions.HatchetSignatureException;
 
 import java.lang.reflect.Method;
 
-public class MethodSignature extends SignatureBase<MethodSignature> implements Signature {
+public class MethodMeta extends AccessorMetaBase<MethodMeta> {
 
-    public MethodSignature(Method method) {
+    public MethodMeta(Method method) {
         this(method.getName(), method.getReturnType(), method.getParameterTypes(), method.getDeclaringClass());
     }
 
-    public MethodSignature(String name, Class type, Class[] inputTypes, Class declaringClass) {
+    public MethodMeta(String name, Class type, Class[] inputTypes, Class declaringClass) {
         super(name, type, inputTypes, declaringClass);
     }
 
@@ -21,5 +21,10 @@ public class MethodSignature extends SignatureBase<MethodSignature> implements S
         } catch (NoSuchMethodException e) {
             throw new HatchetSignatureException("Invalid signature, can not find method", e);
         }
+    }
+
+    @Override
+    public MetaType getAccessorMetaType() {
+        return MetaType.METHOD;
     }
 }

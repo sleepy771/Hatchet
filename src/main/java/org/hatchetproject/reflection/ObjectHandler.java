@@ -1,5 +1,7 @@
 package org.hatchetproject.reflection;
 
+import org.hatchetproject.reflection.meta.signatures.PropertyMeta;
+
 import java.util.Collection;
 import java.util.Map;
 

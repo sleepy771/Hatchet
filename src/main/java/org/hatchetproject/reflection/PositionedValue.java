@@ -19,7 +19,7 @@ public class PositionedValue {
     }
 
     public PositionedValue(IsProperty isProperty) {
-        this(isProperty.index() > -1 ? isProperty.index() : -1, isProperty);
+        this(-1 < isProperty.index() ? isProperty.index() : -1, isProperty);
     }
 
     public PositionedValue(int position, InjectDefault inject) {
@@ -41,15 +41,15 @@ public class PositionedValue {
     }
 
     public boolean hasSpecificPosition() {
-        return index > -1;
+        return -1 < index;
     }
 
     public boolean hasInject() {
-        return this.injectDefault != null;
+        return null != this.injectDefault;
     }
 
     public boolean getIsProperty() {
-        return this.isProperty != null;
+        return null != this.isProperty;
     }
 
     public InjectDefault getInject() {

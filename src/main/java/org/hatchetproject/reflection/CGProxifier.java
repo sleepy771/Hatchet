@@ -1,12 +1,10 @@
 package org.hatchetproject.reflection;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import net.sf.cglib.proxy.CallbackHelper;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
-import net.sf.cglib.transform.impl.AccessFieldTransformer.Callback;
 import org.hatchetproject.Builder;
-import org.objectweb.asm.Type;
+import org.hatchetproject.reflection.meta.signatures.MethodMeta;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -16,7 +14,7 @@ import java.util.Map;
  */
 public class CGProxifier<Type> implements Builder<Type>{
 
-    private Map<MethodSignature, ProxyCallback> callbackMap;
+    private Map<MethodMeta, ProxyCallback> callbackMap;
 
     private final Class<Type> proxyClass;
 
@@ -51,7 +49,7 @@ public class CGProxifier<Type> implements Builder<Type>{
         CallbackHelper helper = new CallbackHelper(Object.class, new Class[]{proxyClass}) {
             @Override
             protected Object getCallback(Method method) {
-                MethodSignature signature = new MethodSignature(method);
+                MethodMeta signature = new MethodMeta(method);
                 if (callbackMap.containsKey(signature)) {
                     return callbackMap.get(signature).byType(instance);
                 }

@@ -2,6 +2,7 @@ package org.hatchetproject.reflection.accessors;
 
 import com.sun.istack.internal.NotNull;
 import org.hatchetproject.exceptions.InvocationException;
+import org.hatchetproject.reflection.meta.signatures.AccessorMeta;
 import org.hatchetproject.value_management.inject_default.AssignedParameters.Type;
 import org.hatchetproject.value_management.inject_default.ParametersBuilder;
 
@@ -20,6 +21,11 @@ public class ConstructorExecutor extends AbstractAccessorExecutor {
     public ParametersBuilder createBuilder() {
         setBuilder(ParametersBuilder.createConstructorParametersBuilder(constructor));
         return getBuilder();
+    }
+
+    @Override
+    public AccessorMeta getSignature() {
+        return null;
     }
 
     @Override

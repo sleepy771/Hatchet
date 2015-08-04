@@ -51,7 +51,7 @@ public abstract class TimeoutManager<KEY, RELEASABLE extends Releasable> impleme
         }
 
         public void setTimeout(long timeout) {
-            if (timeout > 0) {
+            if (0 < timeout) {
                 this.timeout = timeout;
                 updateAccessTime();
             }
@@ -75,9 +75,10 @@ public abstract class TimeoutManager<KEY, RELEASABLE extends Releasable> impleme
 
         @Override
         public boolean isReleased() {
-            if (releasable == null || releasable.isReleased())
+            if (null == releasable || releasable.isReleased()) {
                 runCleanup();
-            if (releasable == null) {
+            }
+            if (null == releasable) {
                 return true;
             }
             if (releasable.isReleased()) {
@@ -156,7 +157,7 @@ public abstract class TimeoutManager<KEY, RELEASABLE extends Releasable> impleme
 
     @Override
     public boolean isAssigned() {
-        return releaseManager == null;
+        return null == releaseManager;
     }
 
     @Override
@@ -166,7 +167,7 @@ public abstract class TimeoutManager<KEY, RELEASABLE extends Releasable> impleme
 
     @Override
     public void release(RELEASABLE releasable) {
-        if (releasable == null) {
+        if (null == releasable) {
             LOGGER.debug("Trying to release null");
             return;
         }

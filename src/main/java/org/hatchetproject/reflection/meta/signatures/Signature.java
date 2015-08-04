@@ -1,4 +1,4 @@
-package org.hatchetproject.reflection;
+package org.hatchetproject.reflection.meta.signatures;
 
 /**
  * Created by filip on 6/28/15.

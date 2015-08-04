@@ -1,6 +1,6 @@
 package org.hatchetproject.value_management.inject_default;
 
-import org.hatchetproject.reflection.Classy;
+import org.hatchetproject.reflection.meta.signatures.Classy;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
