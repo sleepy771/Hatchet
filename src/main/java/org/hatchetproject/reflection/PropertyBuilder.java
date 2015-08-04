@@ -7,6 +7,8 @@ import org.hatchetproject.annotations.InjectMultiple;
 import org.hatchetproject.annotations.IsProperty;
 import org.hatchetproject.exceptions.ManagerException;
 import org.hatchetproject.exceptions.PropertyAccessorException;
+import org.hatchetproject.reflection.accessors.property.PropertyGetter;
+import org.hatchetproject.reflection.accessors.property.PropertySetter;
 import org.hatchetproject.reflection.constants.AsSelf;
 import org.hatchetproject.utils.HatchetInspectionUtils;
 import org.hatchetproject.value_management.RegistrableValue.ValueSignature;

@@ -1,4 +1,4 @@
-package org.hatchetproject.reflection;
+package org.hatchetproject.reflection.cglib;
 
 import net.sf.cglib.proxy.CallbackHelper;
 import net.sf.cglib.proxy.Enhancer;

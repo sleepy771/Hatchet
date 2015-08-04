@@ -3,10 +3,7 @@ package org.hatchetproject.reflection;
 import org.hatchetproject.exceptions.ManagerException;
 import org.hatchetproject.manager.memory.TimeoutManager;
 
-/**
- * Created by filip on 6/29/15.
- */
-public class SchemeManager extends TimeoutManager<Class, Scheme> {
+public final class SchemeManager extends TimeoutManager<Class, Scheme> {
 
     private static SchemeManager INSTANCE;
 
@@ -40,7 +37,7 @@ public class SchemeManager extends TimeoutManager<Class, Scheme> {
     }
 
     public static SchemeManager getInstance() {
-        if (INSTANCE == null) {
+        if (null == INSTANCE) {
             INSTANCE = new SchemeManager();
         }
         return INSTANCE;

@@ -1,4 +1,4 @@
-package org.hatchetproject.reflection;
+package org.hatchetproject.reflection.cglib;
 
 import net.sf.cglib.proxy.FixedValue;
 import org.hatchetproject.reflection.meta.signatures.MethodMeta;

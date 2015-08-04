@@ -3,9 +3,6 @@ package org.hatchetproject.reflection;
 import org.hatchetproject.annotations.InjectDefault;
 import org.hatchetproject.annotations.IsProperty;
 
-/**
- * Created by filip on 7/5/15.
- */
 public class PositionedValue {
 
     private InjectDefault injectDefault;
@@ -15,7 +12,7 @@ public class PositionedValue {
     private int index;
 
     public PositionedValue(InjectDefault inject) {
-        this(inject.index() > -1 ? inject.index() : -1, inject);
+        this(-1 < inject.index() ? inject.index() : -1, inject);
     }
 
     public PositionedValue(IsProperty isProperty) {
