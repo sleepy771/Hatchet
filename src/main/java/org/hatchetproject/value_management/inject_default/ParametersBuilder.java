@@ -131,32 +131,36 @@ public final class ParametersBuilder implements AssignedParameters, MutableParam
     private TreeSet<Integer> unassigned;
 
     public static ParametersBuilder createConstructorParametersBuilder(Constructor constructor) {
-        return new ParametersBuilder(Type.CONSTRUCTOR, null, constructor, null, false);
+        return new ParametersBuilder(Type.CONSTRUCTOR, null, constructor, null);
     }
 
     public static ParametersBuilder createMethodParametersBuilder(Method method) {
-        return new ParametersBuilder(Type.METHOD, method, null, null, false);
+        return new ParametersBuilder(Type.METHOD, method, null, null);
     }
 
     public static ParametersBuilder createFieldParametersBuilder(Field field) {
-        return new ParametersBuilder(Type.FIELD, null, null, field, false);
+        return new ParametersBuilder(Type.FIELD, null, null, field);
     }
 
-    public static ParametersBuilder createFieldGetterParametersBuilder(Field field) {
-        return new ParametersBuilder(Type.FIELD, null, null, field, true);
+    public static ParametersBuilder createCGMethodParametersBuilder(Method method) {
+        return new ParametersBuilder(Type.METHOD, method, null, null, new Class[]{method.getReturnType()});
     }
 
-    private ParametersBuilder(AssignedParameters.Type type, Method method, Constructor constructor, Field field, boolean empty) {
+    private ParametersBuilder(AssignedParameters.Type type, Method method, Constructor constructor, Field field) {
+        this(type, method, constructor, field, type.getParameterTypes(method, constructor, field));
+    }
+
+    private ParametersBuilder(AssignedParameters.Type type, Method method, Constructor constructor, Field field, Class[] parameterTypes) {
         this.method = method;
         this.field = field;
         this.constructor = constructor;
         this.type = type;
-        this.values = new Object[empty ? 0 : type.getParameterCount(method, constructor, field)];
+        this.values = new Object[parameterTypes.length];
         unassigned = new TreeSet<>();
         for (int num : HatchetCollectionsManipulation.createIntegersGenerator(0, values.length, 1)) {
             unassigned.add(num);
         }
-        parameterTypes = type.getParameterTypes(method, constructor, field);
+        this.parameterTypes = parameterTypes;
     }
 
     @Override
