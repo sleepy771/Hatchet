@@ -1,8 +1,8 @@
 package org.hatchetproject.reflection;
 
 import org.hatchetproject.annotations.HasProperties;
-import org.hatchetproject.annotations.InjectDefault;
-import org.hatchetproject.annotations.InjectMultiple;
+import org.hatchetproject.annotations.InjectValue;
+import org.hatchetproject.annotations.InjectValues;
 import org.hatchetproject.annotations.IsProperty;
 import org.hatchetproject.annotations.Prefer;
 import org.hatchetproject.exceptions.InspectionException;
@@ -37,8 +37,8 @@ public class ClassInspector {
 
     private final static HashSet<Class<? extends Annotation>> INTERESTING_ANNOTATIONS = new HashSet<Class<? extends Annotation>>() {
         {
-            add(InjectDefault.class);
-            add(InjectMultiple.class);
+            add(InjectValue.class);
+            add(InjectValues.class);
             add(Prefer.class);
             add(HasProperties.class);
             add(IsProperty.class);
@@ -100,10 +100,10 @@ public class ClassInspector {
             if (HatchetInspectionUtils.isSetter(method)) {
                 setters.add(method);
             } else if (HatchetInspectionUtils.isGetter(method)) {
-                if (method.getAnnotation(InjectMultiple.class) != null
-                        || method.getAnnotation(InjectDefault.class) != null) {
+                if (method.getAnnotation(InjectValues.class) != null
+                        || method.getAnnotation(InjectValue.class) != null) {
                     addFlag(Flag.INVALID);
-                    throw new UnsupportedOperationException("Getter has deffined one or more InjectDefault annotations, but they are not supported yet");
+                    throw new UnsupportedOperationException("Getter has deffined one or more InjectValue annotations, but they are not supported yet");
                 }
                 getters.add(method);
             } else {
@@ -133,13 +133,13 @@ public class ClassInspector {
         addFlag(Flag.INSPECTED_FIELDS);
         for (Field field : clazz.getFields()) {
             IsProperty fieldIsProperty = field.getAnnotation(IsProperty.class);
-            InjectDefault injectDefault = field.getAnnotation(InjectDefault.class);
-            if (fieldIsProperty != null || injectDefault != null) {
+            InjectValue injectValue = field.getAnnotation(InjectValue.class);
+            if (fieldIsProperty != null || injectValue != null) {
                 if (!HatchetInspectionUtils.isPublic(field)) {
                     addFlag(Flag.INVALID);
                     throw new InspectionException("Field is not public");
                 }
-                if (fieldIsProperty != null ^ injectDefault != null) {
+                if (fieldIsProperty != null ^ injectValue != null) {
                     if (fieldIsProperty != null) {
                         propertyFields.add(field);
                         continue;
@@ -147,7 +147,7 @@ public class ClassInspector {
                     injectDefaultFields.add(field);
                 } else {
                     addFlag(Flag.INVALID);
-                    throw new InspectionException("Field can not define both InjectDefault and IsProperty annotation.");
+                    throw new InspectionException("Field can not define both InjectValue and IsProperty annotation.");
                 }
             }
         }

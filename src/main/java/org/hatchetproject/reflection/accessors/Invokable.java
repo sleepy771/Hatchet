@@ -8,5 +8,5 @@ import org.hatchetproject.exceptions.InvocationException;
 public interface Invokable extends ImmediatelyInvokable {
     Object invoke(Object destination) throws InvocationException;
 
-    boolean canInvoke();
+    boolean isFilled();
 }

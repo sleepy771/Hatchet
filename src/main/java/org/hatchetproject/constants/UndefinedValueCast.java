@@ -1,4 +1,7 @@
-package org.hatchetproject.value_management;
+package org.hatchetproject.constants;
+
+import org.hatchetproject.value_management.ValueCast;
+import org.hatchetproject.value_management.ValueCastSignature;
 
 /**
  * Created by filip on 7/2/15.

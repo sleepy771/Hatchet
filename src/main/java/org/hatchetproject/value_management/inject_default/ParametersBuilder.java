@@ -131,23 +131,27 @@ public final class ParametersBuilder implements AssignedParameters, MutableParam
     private TreeSet<Integer> unassigned;
 
     public static ParametersBuilder createConstructorParametersBuilder(Constructor constructor) {
-        return new ParametersBuilder(Type.CONSTRUCTOR, null, constructor, null);
+        return new ParametersBuilder(Type.CONSTRUCTOR, null, constructor, null, false);
     }
 
     public static ParametersBuilder createMethodParametersBuilder(Method method) {
-        return new ParametersBuilder(Type.METHOD, method, null, null);
+        return new ParametersBuilder(Type.METHOD, method, null, null, false);
     }
 
     public static ParametersBuilder createFieldParametersBuilder(Field field) {
-        return new ParametersBuilder(Type.FIELD, null, null, field);
+        return new ParametersBuilder(Type.FIELD, null, null, field, false);
     }
 
-    private ParametersBuilder(AssignedParameters.Type type, Method method, Constructor constructor, Field field) {
+    public static ParametersBuilder createFieldGetterParametersBuilder(Field field) {
+        return new ParametersBuilder(Type.FIELD, null, null, field, true);
+    }
+
+    private ParametersBuilder(AssignedParameters.Type type, Method method, Constructor constructor, Field field, boolean empty) {
         this.method = method;
         this.field = field;
         this.constructor = constructor;
         this.type = type;
-        this.values = new Object[type.getParameterCount(method, constructor, field)];
+        this.values = new Object[empty ? 0 : type.getParameterCount(method, constructor, field)];
         unassigned = new TreeSet<>();
         for (int num : HatchetCollectionsManipulation.createIntegersGenerator(0, values.length, 1)) {
             unassigned.add(num);

@@ -6,15 +6,6 @@ import org.hatchetproject.value_management.inject_default.ParametersBuilder;
 import java.util.List;
 
 public interface AccessorExecutor extends Invokable {
-
-    ParametersBuilder createBuilder();
-
-    ParametersBuilder getBuilder();
-
-    void setBuilder(ParametersBuilder builder);
-
-    void newParametersBuilder();
-
     AccessorMeta getSignature();
 
     void setParameter(int index, Object value);

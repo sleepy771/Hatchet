@@ -2,15 +2,15 @@ package org.hatchetproject.reflection.accessors.property;
 
 import org.hatchetproject.exceptions.PropertyGetterException;
 import org.hatchetproject.reflection.accessors.Getter;
+import org.hatchetproject.reflection.accessors.property.helpers.PropertyGetterHelper;
 
 public interface PropertyGetter {
-    Object get(Object source) throws PropertyGetterException;
 
-    Object getRaw(Object source) throws PropertyGetterException;
+    Promise<Object, Object> getPromise(Object source);
 
-    void setAssignHelper(PropertyGetterHelper helper);
+    void setHelper(PropertyGetterHelper helper);
 
-    PropertyGetterHelper getAssignHelper();
+    PropertyGetterHelper getHelper();
 
     Getter getGetter();
 }

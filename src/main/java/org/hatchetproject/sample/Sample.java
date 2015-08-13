@@ -1,8 +1,8 @@
 package org.hatchetproject.sample;
 
 import org.hatchetproject.annotations.HasProperties;
-import org.hatchetproject.annotations.InjectDefault;
-import org.hatchetproject.annotations.InjectMultiple;
+import org.hatchetproject.annotations.InjectValue;
+import org.hatchetproject.annotations.InjectValues;
 import org.hatchetproject.annotations.IsProperty;
 
 public class Sample {
@@ -18,9 +18,9 @@ public class Sample {
     @IsProperty
     public String info;
 
-    @InjectMultiple({
-            @InjectDefault(),
-            @InjectDefault()
+    @InjectValues({
+            @InjectValue(),
+            @InjectValue()
     })
     @IsProperty(name = "name", index = 0)
     public Sample(String name, int age, String info) {

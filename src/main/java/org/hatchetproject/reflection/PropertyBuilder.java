@@ -2,8 +2,8 @@ package org.hatchetproject.reflection;
 
 import org.apache.log4j.Logger;
 import org.hatchetproject.annotations.HasProperties;
-import org.hatchetproject.annotations.InjectDefault;
-import org.hatchetproject.annotations.InjectMultiple;
+import org.hatchetproject.annotations.InjectValue;
+import org.hatchetproject.annotations.InjectValues;
 import org.hatchetproject.annotations.IsProperty;
 import org.hatchetproject.exceptions.ManagerException;
 import org.hatchetproject.exceptions.PropertyAccessorException;
@@ -12,7 +12,7 @@ import org.hatchetproject.reflection.accessors.property.PropertySetter;
 import org.hatchetproject.reflection.constants.AsSelf;
 import org.hatchetproject.utils.HatchetInspectionUtils;
 import org.hatchetproject.value_management.RegistrableValue.ValueSignature;
-import org.hatchetproject.value_management.UndefinedValueCast;
+import org.hatchetproject.constants.UndefinedValueCast;
 import org.hatchetproject.value_management.ValueCast;
 import org.hatchetproject.value_management.ValueCastManager;
 import org.hatchetproject.value_management.ValueCastSignature;
@@ -223,7 +223,7 @@ public class PropertyBuilder {
         return builder;
     }
 
-    static List<PropertyBuilder> createPropertyBuilders(Constructor constructor, IsProperty isProperty, HasProperties hasProperties, InjectDefault injectDefault, InjectMultiple injectMultiple) {
+    static List<PropertyBuilder> createPropertyBuilders(Constructor constructor, IsProperty isProperty, HasProperties hasProperties, InjectValue injectValue, InjectValues injectValues) {
         if(!HatchetInspectionUtils.isAccessibleConstructor(constructor))
             throw new IllegalArgumentException();
         PositionedValue[] values = new PositionedValue[constructor.getParameterCount()];
@@ -242,11 +242,11 @@ public class PropertyBuilder {
                 propSize++;
             }
         }
-        if (injectDefault != null) {
-            idx = add(idx, values, new PositionedValue(injectDefault));
+        if (injectValue != null) {
+            idx = add(idx, values, new PositionedValue(injectValue));
         }
-        if (injectMultiple != null) {
-            for (InjectDefault inj : injectMultiple.value()) {
+        if (injectValues != null) {
+            for (InjectValue inj : injectValues.value()) {
                 idx = add(idx, values, new PositionedValue(inj));
             }
         }
@@ -278,7 +278,7 @@ public class PropertyBuilder {
         return null;
     }
 
-    static List<PropertyBuilder> createPropertyBuilders(Method method, IsProperty isProperty, HasProperties hasProperties, InjectDefault inject, InjectMultiple multipleInject) {
+    static List<PropertyBuilder> createPropertyBuilders(Method method, IsProperty isProperty, HasProperties hasProperties, InjectValue inject, InjectValues multipleInject) {
         if (!HatchetInspectionUtils.isAccessibleSetter(method))
             throw new IllegalArgumentException();
         PositionedValue[] values = new PositionedValue[method.getParameterCount()];
@@ -298,7 +298,7 @@ public class PropertyBuilder {
             idx = add(idx, values, new PositionedValue(inject));
         }
         if (multipleInject != null) {
-            for (InjectDefault inj : multipleInject.value()) {
+            for (InjectValue inj : multipleInject.value()) {
                 idx = add(idx, values, new PositionedValue(inj));
             }
         }

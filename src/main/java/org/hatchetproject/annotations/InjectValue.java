@@ -10,8 +10,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.FIELD})
-public @interface InjectDefault {
-    String filePath() default "-";
+public @interface InjectValue {
     String uid() default "-";
     Class type() default AsSelf.class;
     int index() default -1;

@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.CONSTRUCTOR, ElementType.METHOD})
-public @interface InjectMultiple {
-    InjectDefault[] value();
+public @interface InjectValues {
+    InjectValue[] value();
 }
