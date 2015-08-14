@@ -1,5 +1,6 @@
 package org.hatchetproject.reflection;
 
+import com.sun.istack.internal.NotNull;
 import org.hatchetproject.Builder;
 import org.hatchetproject.exceptions.BuilderException;
 import org.hatchetproject.exceptions.PropertyGetterException;
@@ -79,7 +80,18 @@ public class ObjectBuilder implements Builder<Object>, Map<PropertyMeta, Object>
     }
 
     private String missing() {
-        return null;
+        Collection<PropertyMeta> missing = new HashSet<>(getScheme().getProperties());
+        missing.removeAll(values.keySet());
+        StringBuilder sb = new StringBuilder("[");
+        boolean first = true;
+        for (PropertyMeta meta : missing) {
+            if(!first) {
+                sb.append(" ,");
+            }
+            sb.append(meta.getName());
+            first = false;
+        }
+        return sb.append("]").toString();
     }
 
     @Override
@@ -93,7 +105,7 @@ public class ObjectBuilder implements Builder<Object>, Map<PropertyMeta, Object>
     }
 
     @Override
-    public final boolean containsKey(Object key) {
+    public final boolean containsKey(@NotNull Object key) {
         return values.containsKey(key);
     }
 
@@ -103,12 +115,12 @@ public class ObjectBuilder implements Builder<Object>, Map<PropertyMeta, Object>
     }
 
     @Override
-    public final Object get(Object key) {
+    public final Object get(@NotNull Object key) {
         return values.get(key);
     }
 
     @Override
-    public final Object put(PropertyMeta key, Object value) {
+    public final Object put(@NotNull PropertyMeta key, Object value) {
         if (!getScheme().isValid(key, value.getClass())) {
             throw new ClassCastException();
         }
@@ -143,6 +155,7 @@ public class ObjectBuilder implements Builder<Object>, Map<PropertyMeta, Object>
     }
 
     @Override
+    @NotNull
     public final Set<Entry<PropertyMeta, Object>> entrySet() {
         return new HashSet<>(values.entrySet());
     }
