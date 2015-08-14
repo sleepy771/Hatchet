@@ -16,7 +16,7 @@ public interface AssignedParameters extends Parameters, Classy {
 //                case METHOD:
 //                    return new MethodExecutor(method);
 //                case CONSTRUCTOR:
-//                    return new ConstructorSetter(constructor);
+//                    return new AbstractConstructorSetter(constructor);
 //                case FIELD:
 //                    return new FieldSetter(field);
 //            }
@@ -31,7 +31,7 @@ public interface AssignedParameters extends Parameters, Classy {
 //                    return new MethodExecutor(method);
 //                case CONSTRUCTOR:
 //                    Constructor constructor = setterClass.getConstructor(paramTypes);
-//                    return new ConstructorSetter(constructor);
+//                    return new AbstractConstructorSetter(constructor);
 //                case FIELD:
 //                    Field field = setterClass.getField(name);
 //                    return new FieldSetter(field);

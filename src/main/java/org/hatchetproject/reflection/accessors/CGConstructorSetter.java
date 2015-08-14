@@ -1,38 +1,24 @@
 package org.hatchetproject.reflection.accessors;
 
+import com.sun.istack.internal.NotNull;
 import net.sf.cglib.proxy.CallbackHelper;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
 import org.hatchetproject.exceptions.InvocationException;
-import org.hatchetproject.reflection.meta.signatures.ConstructorMeta;
 import org.hatchetproject.reflection.meta.signatures.MethodMeta;
-import org.hatchetproject.value_management.inject_default.ParametersBuilder;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
-public class CGConstructorSetter extends AbstractAccessorExecutor implements Setter {
+public final class CGConstructorSetter extends AbstractConstructorSetter {
 
-    private Constructor constructor;
+    private final Map<MethodMeta, ObjectLessMethodSetter> setterMap;
 
-    private Map<MethodMeta, ObjectLessMethodSetter> setterMap;
-
-    private ConstructorMeta lazyMeta;
-
-    @Override
-    protected boolean isValidBuilder(ParametersBuilder builder) {
-        return builder.getConstructor().equals(constructor);
-    }
-
-    @Override
-    protected ParametersBuilder createBuilder() {
-        return ParametersBuilder.createConstructorParametersBuilder(constructor);
-    }
-
-    @Override
-    protected void update() {
-
+    public CGConstructorSetter(@NotNull Constructor constructor) {
+        super(constructor);
+        setterMap = new HashMap<>();
     }
 
     @Override
@@ -42,14 +28,6 @@ public class CGConstructorSetter extends AbstractAccessorExecutor implements Set
             methodsPrepared &= methodSetter.isReady();
         }
         return methodsPrepared && isFilled();
-    }
-
-    @Override
-    public ConstructorMeta getSignature() {
-        if (null == lazyMeta) {
-            lazyMeta = new ConstructorMeta(constructor);
-        }
-        return lazyMeta;
     }
 
     @Override
@@ -71,9 +49,13 @@ public class CGConstructorSetter extends AbstractAccessorExecutor implements Set
                 }
             }
         };
-        enhancer.setCallbacks(helper.getCallbacks());
-        enhancer.setCallbackFilter(helper);
-        return enhancer.create(constructor.getParameterTypes(), values);
+        try {
+            enhancer.setCallbacks(helper.getCallbacks());
+            enhancer.setCallbackFilter(helper);
+            return enhancer.create(constructor.getParameterTypes(), values);
+        } catch (IllegalArgumentException iae) {
+            throw new InvocationException("Instatiation failed", iae);
+        }
     }
 
     public void addMethodSetter(ObjectLessMethodSetter setter) {

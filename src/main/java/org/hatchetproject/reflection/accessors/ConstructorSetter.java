@@ -1,37 +1,29 @@
 package org.hatchetproject.reflection.accessors;
 
 import com.sun.istack.internal.NotNull;
+import org.hatchetproject.exceptions.InvocationException;
 
 import java.lang.reflect.Constructor;
-import java.util.HashSet;
-import java.util.Set;
+import java.lang.reflect.InvocationTargetException;
 
-public class ConstructorSetter extends ConstructorExecutor implements Setter {
-
-    private final Set<ReadyListener<ConstructorSetter>> listenerSet;
+public final class ConstructorSetter extends AbstractConstructorSetter {
 
     public ConstructorSetter(@NotNull Constructor constructor) {
         super(constructor);
-        listenerSet = new HashSet<>();
-    }
 
-    @Override
-    protected void update() {
-        for (ReadyListener<ConstructorSetter> setterReadyListener : this.listenerSet) {
-            setterReadyListener.onReady(this);
-        }
     }
 
     @Override
     protected boolean isReady() {
-        return getBuilder().isFilled();
+        return isFilled();
     }
 
-    public void addReadyListener(ReadyListener<ConstructorSetter> setterReadyListener) {
-        this.listenerSet.add(setterReadyListener);
-    }
-
-    public void removeReadyListener(ReadyListener<ConstructorSetter> setterReadyListener) {
-        this.listenerSet.remove(setterReadyListener);
+    @Override
+    public Object invoke(Object object, Object[] values) throws InvocationException {
+        try {
+            return constructor.newInstance(values);
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            throw new InvocationException("Can not create object", e);
+        }
     }
 }

@@ -4,13 +4,14 @@ import org.apache.log4j.Logger;
 import org.hatchetproject.exceptions.InvocationException;
 import org.hatchetproject.exceptions.PropertyGetterException;
 import org.hatchetproject.reflection.accessors.property.Promise;
+import org.hatchetproject.reflection.accessors.property.PropertyPromise;
 import org.hatchetproject.reflection.accessors.property.helpers.PropertyGetterHelper;
 import org.hatchetproject.reflection.meta.signatures.PropertyMeta;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class PromiseImpl<TYPE, RAW_TYPE> implements Promise<TYPE, RAW_TYPE>, ReadyListener<Getter> {
+public class PromiseImpl<TYPE, RAW_TYPE> implements PropertyPromise<TYPE, RAW_TYPE>, ReadyListener<Getter> {
 
     private static final Logger LOGGER = Logger.getLogger(PromiseImpl.class);
 
@@ -43,6 +44,11 @@ public class PromiseImpl<TYPE, RAW_TYPE> implements Promise<TYPE, RAW_TYPE>, Rea
             }
         }
         return type;
+    }
+
+    @Override
+    public boolean isComplete() {
+        return isComplete;
     }
 
     @Override

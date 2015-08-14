@@ -1,65 +1,36 @@
 package org.hatchetproject.reflection;
 
 import org.hatchetproject.manager.memory.Releasable;
+import org.hatchetproject.reflection.accessors.CGConstructorSetter;
+import org.hatchetproject.reflection.accessors.AbstractConstructorSetter;
+import org.hatchetproject.reflection.accessors.property.PropertyGetter;
+import org.hatchetproject.reflection.accessors.property.PropertySetter;
 import org.hatchetproject.reflection.meta.signatures.Classy;
 import org.hatchetproject.reflection.meta.signatures.PropertyMeta;
-import org.hatchetproject.reflection.meta.signatures.Signature;
-import org.hatchetproject.value_management.ValueCast;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 
 public interface Scheme extends Releasable, Classy {
-    boolean canAssign(Signature signature);
+    boolean canAssign(PropertyMeta meta);
 
-    boolean isValidType(Signature signature, Class value);
+    boolean isValid(PropertyMeta meta, Object type);
 
-    boolean validateAssigned(Set<Signature> signatureSet);
+    Set<PropertyGetter> getGetters();
 
-    boolean canAssignEmpty(Signature signature);
+    Set<PropertySetter> getSetters();
 
-    boolean needCast(Signature signature, Class valueType);
+    Set<PropertyMeta> getProperties();
 
-    boolean canCast(Signature signature, Class valueType);
+    PropertyGetter getGetter(PropertyMeta meta);
 
-    ValueCast getCast(Signature property, Class valueType);
+    PropertySetter getSetter(PropertyMeta meta);
 
-    Set<Signature> getConstructionProperties();
+    Set<PropertyMeta> getConstructionProperties();
 
-    Set<Signature> getConstructorProperties();
+    Set<PropertyMeta> getAssignableProperties();
 
-    Set<Signature> getMethodOverrideProperties();
+    AbstractConstructorSetter getConstructorSetter();
 
-    Set<Signature> getSetterProperties();
-
-    Set<Signature> getMethodSetterProperties();
-
-    Set<Signature> getFieldProperties();
-
-    Map<Signature, PropertyMeta> getPropertyMap();
-
-    List<Class> getConstructorArguments();
-
-    Map<Integer, Object> getDefaultConstructorValues();
-
-    boolean hasDefaultConstructorValues();
-
-//    ObjectHandler getObjectHandler();
-//
-//    // TODO remove
-//    ValueGetter getGetter();
-//
-//    ValueSetter getSetter();
-//
-//    void setGetter(ValueGetter getter);
-//
-//    void setSetter(ValueSetter setter);
-
-    Map<String, Object> getValuesFrom(Object source);
-
-    void setValuesTo(Object destination, Map<String, Object> values);
-
-    Object createObject(Map<String, Object> values);
+    boolean isAllSet(Set<PropertyMeta> metas);
 }

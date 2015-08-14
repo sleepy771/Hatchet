@@ -13,48 +13,48 @@ public abstract class AbstractAccessorExecutor implements AccessorExecutor {
     private ParametersBuilder builder;
 
     @Override
-    public void setParameter(int index, Object value) {
+    public final void setParameter(int index, Object value) {
         builder.set(index, value);
         checkAssigned();
     }
 
     @Override
-    public void setAllParameters(Object[] values) {
+    public final void setAllParameters(Object[] values) {
         builder.setAll(values);
         checkAssigned();
     }
 
     @Override
-    public void setAllParameters(List<Object> values) {
+    public final void setAllParameters(List<Object> values) {
         builder.setAll(values);
         checkAssigned();
     }
 
     @Override
-    public void add(Object value) {
+    public final void add(Object value) {
         builder.add(value);
         checkAssigned();
     }
 
     @Override
-    public void addAllParameters(Object[] values) {
+    public final void addAllParameters(Object[] values) {
         builder.addAll(values);
         checkAssigned();
     }
 
     @Override
-    public void addAllParameters(List<Object> values) {
+    public final void addAllParameters(List<Object> values) {
         builder.addAll(values);
         checkAssigned();
     }
 
     @Override
-    public boolean isFilled() {
+    public final boolean isFilled() {
         return builder.isFilled();
     }
 
     @Override
-    public Object invoke(Object destination) throws InvocationException {
+    public final Object invoke(Object destination) throws InvocationException {
         try {
             AssignedParameters parameters = getParameters();
             return this.invoke(destination, parameters.asArray());
@@ -63,7 +63,7 @@ public abstract class AbstractAccessorExecutor implements AccessorExecutor {
         }
     }
 
-    protected AssignedParameters getParameters() throws ParametersException {
+    protected final AssignedParameters getParameters() throws ParametersException {
         return builder.build();
     }
 
