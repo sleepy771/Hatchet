@@ -8,6 +8,8 @@ import org.hatchetproject.reflection.accessors.property.Promise;
 import org.hatchetproject.reflection.meta.signatures.PropertyMeta;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -18,17 +20,33 @@ public class ObjectBuilder implements Builder<Object>, Map<PropertyMeta, Object>
 
     private Map<PropertyMeta, Object> values;
 
+    public ObjectBuilder(Scheme scheme, Map<PropertyMeta, Object> values) {
+        this.scheme = scheme;
+        this.values = new HashMap<>(values);
+    }
+
+    public ObjectBuilder(Scheme scheme) {
+        this(scheme, Collections.emptyMap());
+    }
+
+    public ObjectBuilder() {
+        this(null);
+    }
+
     public final void setScheme(Scheme scheme) {
         values.clear();
         this.scheme = scheme;
     }
 
     public final Scheme getScheme() {
+        if (null == scheme) {
+            throw new NullPointerException("Scheme is not set!");
+        }
         return this.scheme;
     }
 
     public final boolean isComplete() {
-        return scheme.isAllSet(values.keySet());
+        return getScheme().isAllSet(values.keySet());
     }
 
     @Override
@@ -36,10 +54,10 @@ public class ObjectBuilder implements Builder<Object>, Map<PropertyMeta, Object>
         if (!isComplete()) {
             throw new BuilderException("Can not build object, yet. Missing properties: " + missing());
         }
-        Promise promise = scheme.getConstructorSetter().getPromise();
+        Promise promise = getScheme().getConstructorSetter().getPromise();
         try {
-            for (PropertyMeta constructionProperty : scheme.getConstructionProperties()) {
-                scheme.getSetter(constructionProperty).set(null, values.get(constructionProperty));
+            for (PropertyMeta constructionProperty : getScheme().getConstructionProperties()) {
+                getScheme().getSetter(constructionProperty).set(null, values.get(constructionProperty));
             }
         } catch (PropertySetterException pse) {
             throw new BuilderException("Can not set construction property", pse);
@@ -51,8 +69,8 @@ public class ObjectBuilder implements Builder<Object>, Map<PropertyMeta, Object>
             throw new BuilderException("Object is not instantiated yet", e);
         }
         try {
-            for (PropertyMeta assignProperty : scheme.getAssignableProperties()) {
-                scheme.getSetter(assignProperty).set(filledInstance, values.get(assignProperty));
+            for (PropertyMeta assignProperty : getScheme().getAssignableProperties()) {
+                getScheme().getSetter(assignProperty).set(filledInstance, values.get(assignProperty));
             }
             return filledInstance;
         } catch (PropertySetterException pse) {
@@ -91,7 +109,7 @@ public class ObjectBuilder implements Builder<Object>, Map<PropertyMeta, Object>
 
     @Override
     public final Object put(PropertyMeta key, Object value) {
-        if (!scheme.isValid(key, value.getClass())) {
+        if (!getScheme().isValid(key, value.getClass())) {
             throw new ClassCastException();
         }
         return values.put(key, value);
