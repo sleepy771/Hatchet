@@ -4,6 +4,7 @@ import net.sf.cglib.proxy.CallbackHelper;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
 import org.hatchetproject.Builder;
+import org.hatchetproject.exceptions.BuilderException;
 import org.hatchetproject.reflection.meta.signatures.MethodMeta;
 
 import java.lang.reflect.Method;
@@ -80,7 +81,7 @@ public class CGProxifier<Type> implements Builder<Type>{
     }
 
     @Override
-    public Type build() {
+    public Type build() throws BuilderException {
         return null;
     }
 }

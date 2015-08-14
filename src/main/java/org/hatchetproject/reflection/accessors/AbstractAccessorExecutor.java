@@ -3,7 +3,6 @@ package org.hatchetproject.reflection.accessors;
 import org.hatchetproject.exceptions.InvocationException;
 import org.hatchetproject.exceptions.ParametersException;
 import org.hatchetproject.value_management.inject_default.AssignedParameters;
-import org.hatchetproject.value_management.inject_default.AssignedParameters.Type;
 import org.hatchetproject.value_management.inject_default.ParametersBuilder;
 
 import java.util.List;
@@ -64,7 +63,11 @@ public abstract class AbstractAccessorExecutor implements AccessorExecutor {
     }
 
     protected final AssignedParameters getParameters() throws ParametersException {
-        return builder.build();
+        try {
+            return builder.build();
+        } catch (org.hatchetproject.exceptions.BuilderException e) {
+            e.printStackTrace();
+        }
     }
 
     protected abstract boolean isValidBuilder(ParametersBuilder builder);

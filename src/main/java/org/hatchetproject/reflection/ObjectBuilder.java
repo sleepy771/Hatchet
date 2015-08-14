@@ -2,6 +2,8 @@ package org.hatchetproject.reflection;
 
 import org.hatchetproject.Builder;
 import org.hatchetproject.exceptions.BuilderException;
+import org.hatchetproject.exceptions.PropertyGetterException;
+import org.hatchetproject.exceptions.PropertySetterException;
 import org.hatchetproject.reflection.accessors.property.Promise;
 import org.hatchetproject.reflection.meta.signatures.PropertyMeta;
 
@@ -30,19 +32,32 @@ public class ObjectBuilder implements Builder<Object>, Map<PropertyMeta, Object>
     }
 
     @Override
-    public final Object build() throws Exception {
+    public final Object build() throws BuilderException {
         if (!isComplete()) {
             throw new BuilderException("Can not build object, yet. Missing properties: " + missing());
         }
         Promise promise = scheme.getConstructorSetter().getPromise();
-        for (PropertyMeta constructionProperty : scheme.getConstructionProperties()) {
-            scheme.getSetter(constructionProperty).set(null, values.get(constructionProperty));
+        try {
+            for (PropertyMeta constructionProperty : scheme.getConstructionProperties()) {
+                scheme.getSetter(constructionProperty).set(null, values.get(constructionProperty));
+            }
+        } catch (PropertySetterException pse) {
+            throw new BuilderException("Can not set construction property", pse);
         }
-        Object filledInstance = promise.get();
-        for (PropertyMeta assignProperty : scheme.getAssignableProperties()) {
-            scheme.getSetter(assignProperty).set(filledInstance, values.get(assignProperty));
+        Object filledInstance = null;
+        try {
+            filledInstance = promise.get();
+        } catch (InterruptedException | PropertyGetterException e) {
+            throw new BuilderException("Object is not instantiated yet", e);
         }
-        return filledInstance;
+        try {
+            for (PropertyMeta assignProperty : scheme.getAssignableProperties()) {
+                scheme.getSetter(assignProperty).set(filledInstance, values.get(assignProperty));
+            }
+            return filledInstance;
+        } catch (PropertySetterException pse) {
+            throw new BuilderException("Builder can not assign property", pse);
+        }
     }
 
     private String missing() {
