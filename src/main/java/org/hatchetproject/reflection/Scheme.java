@@ -10,7 +10,7 @@ import org.hatchetproject.reflection.meta.signatures.PropertyMeta;
 import java.util.Set;
 
 
-public interface Scheme extends Releasable, Classy {
+public interface Scheme extends Classy {
     boolean canAssign(PropertyMeta meta);
 
     boolean isValid(PropertyMeta meta, Object type);

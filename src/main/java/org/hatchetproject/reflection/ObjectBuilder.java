@@ -63,7 +63,7 @@ public class ObjectBuilder implements Builder<Object>, Map<PropertyMeta, Object>
         } catch (PropertySetterException pse) {
             throw new BuilderException("Can not set construction property", pse);
         }
-        Object filledInstance = null;
+        Object filledInstance;
         try {
             filledInstance = promise.get();
         } catch (InterruptedException | PropertyGetterException e) {
