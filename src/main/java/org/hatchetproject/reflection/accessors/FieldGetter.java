@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 
-public class FieldGetter implements Targetable, Getter {
+public class FieldGetter implements Getter {
 
     private final Field field;
 
@@ -21,6 +21,10 @@ public class FieldGetter implements Targetable, Getter {
     private FieldMeta lazyMeta;
 
     private final Set<ReadyListener<Getter>> listeners;
+
+    private Object result;
+
+    private Exception exception;
 
     public FieldGetter(Field field) {
         this.field = field;
@@ -35,6 +39,28 @@ public class FieldGetter implements Targetable, Getter {
     @Override
     public void removeListener(ReadyListener<Getter> listener) {
         listeners.remove(listener);
+    }
+
+    @Override
+    public Object getResult() {
+        return result;
+    }
+
+    @Override
+    public Exception getException() {
+        return exception;
+    }
+
+    @Override
+    public boolean hasFailed() {
+        return null != exception;
+    }
+
+    @Override
+    public void clear() {
+        this.result = null;
+        this.target = null;
+        this.exception = null;
     }
 
     @Override
@@ -104,6 +130,7 @@ public class FieldGetter implements Targetable, Getter {
             throw new ClassCastException("Can not cast " + target.getClass().getName() + " to " + field.getDeclaringClass().getName());
         }
         this.target = target;
+        clear();
         checkAssigned();
     }
 

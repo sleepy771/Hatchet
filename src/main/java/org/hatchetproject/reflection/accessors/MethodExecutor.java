@@ -56,9 +56,13 @@ public abstract class MethodExecutor extends AbstractAccessorExecutor implements
         if (null != target && !getBuilder().getDeclaringClass().isInstance(target)) {
             throw new IllegalArgumentException("Invalid instance");
         }
+        this.runWipe();
+        getBuilder().clear();
         this.target = target;
         checkAssigned();
     }
+
+    protected abstract void runWipe();
 
     @Override
     public final Object getTarget() {
