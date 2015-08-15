@@ -2,9 +2,9 @@ package org.hatchetproject.reflection.accessors.property.helpers;
 
 import org.hatchetproject.reflection.accessors.Setter;
 
-public class IndexHelper implements PropertyHelper<Object, Void> {
+public class IndexHelper implements PropertySetterHelper<Object, Void> {
 
-    private final Setter setter;
+    private Setter setter;
 
     private final int index;
 
@@ -25,5 +25,10 @@ public class IndexHelper implements PropertyHelper<Object, Void> {
     public Void push(Object o) {
         this.setter.setParameter(index, null != parentHelper ? parentHelper.push(o) : o);
         return null;
+    }
+
+    @Override
+    public void setSetter(Setter setter) {
+        this.setter = setter;
     }
 }
