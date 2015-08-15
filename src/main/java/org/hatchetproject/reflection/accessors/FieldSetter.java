@@ -45,7 +45,7 @@ public class FieldSetter extends AbstractAccessorExecutor implements Setter {
 
     @Override
     protected boolean isReady() {
-        return getBuilder().isFilled() && hasTarget();
+        return isFilled() && hasTarget();
     }
 
     @Override

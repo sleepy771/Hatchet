@@ -2,14 +2,14 @@ package org.hatchetproject.reflection.accessors.property;
 
 import org.hatchetproject.exceptions.PropertySetterException;
 import org.hatchetproject.reflection.accessors.Setter;
-import org.hatchetproject.reflection.accessors.property.helpers.PropertyHelper;
+import org.hatchetproject.reflection.accessors.property.helpers.PropertySetterHelper;
 
 public interface PropertySetter {
     void set(Object destination, Object value) throws PropertySetterException;
 
-    void setHelper(PropertyHelper helper);
+    void setHelper(PropertySetterHelper helper);
 
-    PropertyHelper getHelper();
+    PropertySetterHelper getHelper();
 
     Setter getSetter();
 }

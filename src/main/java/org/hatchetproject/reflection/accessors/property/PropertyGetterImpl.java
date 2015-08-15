@@ -3,6 +3,7 @@ package org.hatchetproject.reflection.accessors.property;
 import org.hatchetproject.exceptions.PropertyGetterException;
 import org.hatchetproject.reflection.accessors.Getter;
 import org.hatchetproject.reflection.accessors.ReadyListener;
+import org.hatchetproject.reflection.accessors.property.helpers.PropertyGetterHelper;
 import org.hatchetproject.reflection.accessors.property.helpers.PropertyHelper;
 
 import java.util.HashSet;
@@ -12,11 +13,11 @@ public class PropertyGetterImpl implements PropertyGetter {
 
     private final Getter getter;
 
-    private PropertyHelper helper;
+    private PropertyGetterHelper helper;
 
-    public PropertyGetterImpl(Getter getter, PropertyHelper helper) {
-        this.helper = helper;
+    public PropertyGetterImpl(Getter getter, PropertyGetterHelper helper) {
         this.getter = getter;
+        setHelper(helper);
     }
 
     public PropertyGetterImpl(Getter getter) {
@@ -30,12 +31,12 @@ public class PropertyGetterImpl implements PropertyGetter {
     }
 
     @Override
-    public void setHelper(PropertyHelper helper) {
+    public void setHelper(PropertyGetterHelper helper) {
         this.helper = helper;
     }
 
     @Override
-    public PropertyHelper getHelper() {
+    public PropertyGetterHelper getHelper() {
         return helper;
     }
 

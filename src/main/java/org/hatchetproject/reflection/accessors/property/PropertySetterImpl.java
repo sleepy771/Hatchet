@@ -3,12 +3,13 @@ package org.hatchetproject.reflection.accessors.property;
 import org.hatchetproject.exceptions.PropertySetterException;
 import org.hatchetproject.reflection.accessors.Setter;
 import org.hatchetproject.reflection.accessors.property.helpers.PropertyHelper;
+import org.hatchetproject.reflection.accessors.property.helpers.PropertySetterHelper;
 
 public class PropertySetterImpl implements PropertySetter {
 
     private Setter setter;
 
-    private PropertyHelper helper;
+    private PropertySetterHelper helper;
 
     public PropertySetterImpl(Setter setter) {
         this.setter = setter;
@@ -26,12 +27,13 @@ public class PropertySetterImpl implements PropertySetter {
     }
 
     @Override
-    public void setHelper(PropertyHelper helper) {
+    public void setHelper(PropertySetterHelper helper) {
         this.helper = helper;
+        this.helper.setSetter(setter);
     }
 
     @Override
-    public PropertyHelper getHelper() {
+    public PropertySetterHelper getHelper() {
         return helper;
     }
 
