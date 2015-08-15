@@ -19,7 +19,7 @@ public class ObjectBuilder implements Builder<Object>, Map<PropertyMeta, Object>
 
     private Scheme scheme;
 
-    private Map<PropertyMeta, Object> values;
+    private final Map<PropertyMeta, Object> values;
 
     public ObjectBuilder(Scheme scheme, Map<PropertyMeta, Object> values) {
         this.scheme = scheme;
@@ -75,7 +75,7 @@ public class ObjectBuilder implements Builder<Object>, Map<PropertyMeta, Object>
             }
             return filledInstance;
         } catch (PropertySetterException pse) {
-            throw new BuilderException("Builder can not assign property", pse);
+            throw new BuilderException("Builder can not push property", pse);
         }
     }
 

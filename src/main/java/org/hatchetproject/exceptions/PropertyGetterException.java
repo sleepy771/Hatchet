@@ -1,8 +1,5 @@
 package org.hatchetproject.exceptions;
 
-/**
- * Created by filip on 7/2/15.
- */
 public class PropertyGetterException extends Exception {
 
     public PropertyGetterException(String s, Throwable e) {

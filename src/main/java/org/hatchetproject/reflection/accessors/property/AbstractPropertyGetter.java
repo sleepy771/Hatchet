@@ -1,7 +1,6 @@
 package org.hatchetproject.reflection.accessors.property;
 
 import org.hatchetproject.reflection.accessors.Getter;
-import org.hatchetproject.reflection.accessors.property.helpers.PropertyGetterHelper;
 
 public class AbstractPropertyGetter implements PropertyGetter {
 

@@ -190,7 +190,7 @@ public class HatchetTree<T> implements Iterable<T> {
         if (hasElementsInTree(treeNodes))
             throw new IllegalArgumentException("Some elements are already in tree");
         if (!treeNodes.isRoot())
-            throw new IllegalArgumentException("Can not assign non root node");
+            throw new IllegalArgumentException("Can not push non root node");
         Node<T> parentalNode = mappingToNodes.get(parent);
         parentalNode.addChild(treeNodes);
         treeNodes.setParent(parentalNode);

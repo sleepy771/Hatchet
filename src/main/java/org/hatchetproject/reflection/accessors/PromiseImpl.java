@@ -5,7 +5,7 @@ import org.hatchetproject.exceptions.InvocationException;
 import org.hatchetproject.exceptions.PropertyGetterException;
 import org.hatchetproject.reflection.accessors.property.Promise;
 import org.hatchetproject.reflection.accessors.property.PropertyPromise;
-import org.hatchetproject.reflection.accessors.property.helpers.PropertyGetterHelper;
+import org.hatchetproject.reflection.accessors.property.helpers.PropertyHelper;
 import org.hatchetproject.reflection.meta.signatures.PropertyMeta;
 
 import java.util.HashSet;
@@ -15,7 +15,7 @@ public class PromiseImpl<TYPE, RAW_TYPE> implements PropertyPromise<TYPE, RAW_TY
 
     private static final Logger LOGGER = Logger.getLogger(PromiseImpl.class);
 
-    private PropertyGetterHelper<TYPE, RAW_TYPE> helper;
+    private PropertyHelper<RAW_TYPE, TYPE> helper;
     private final Set<ReadyListener<Promise>> listeners;
     private final PropertyMeta meta;
     private final Object source;
@@ -24,7 +24,7 @@ public class PromiseImpl<TYPE, RAW_TYPE> implements PropertyPromise<TYPE, RAW_TY
     private boolean failed;
     private boolean isComplete;
 
-    public PromiseImpl(PropertyMeta meta, Object source, PropertyGetterHelper<TYPE, RAW_TYPE> helper) {
+    public PromiseImpl(PropertyMeta meta, Object source, PropertyHelper<RAW_TYPE, TYPE> helper) {
         this.meta = meta;
         this.source = source;
         this.helper = helper;
@@ -38,7 +38,7 @@ public class PromiseImpl<TYPE, RAW_TYPE> implements PropertyPromise<TYPE, RAW_TY
     public TYPE get() throws PropertyGetterException, InterruptedException {
         if (null == type) {
             if (null != helper) {
-                type = helper.extract(getRaw());
+                type = helper.push(getRaw());
             } else {
                 type = (TYPE) getRaw();
             }
@@ -63,12 +63,12 @@ public class PromiseImpl<TYPE, RAW_TYPE> implements PropertyPromise<TYPE, RAW_TY
     }
 
     @Override
-    public void setHelper(PropertyGetterHelper<TYPE, RAW_TYPE> helper) {
+    public void setHelper(PropertyHelper<RAW_TYPE, TYPE> helper) {
         this.helper = helper;
     }
 
     @Override
-    public PropertyGetterHelper<TYPE, RAW_TYPE> getHelper() {
+    public PropertyHelper<RAW_TYPE, TYPE> getHelper() {
         return this.helper;
     }
 
