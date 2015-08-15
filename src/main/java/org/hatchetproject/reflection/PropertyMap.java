@@ -1,11 +1,9 @@
 package org.hatchetproject.reflection;
 
 import org.hatchetproject.reflection.meta.signatures.Signature;
-import org.hatchetproject.utils.HatchetCollectionsManipulation;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 
 public class PropertyMap {

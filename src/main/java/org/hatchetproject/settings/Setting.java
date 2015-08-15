@@ -1,7 +1,5 @@
 package org.hatchetproject.settings;
 
-import org.hatchetproject.exceptions.MarshalException;
-
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;

@@ -1,6 +1,5 @@
 package org.hatchetproject.value_management.inject_default;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 

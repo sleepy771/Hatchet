@@ -2,13 +2,10 @@ package org.hatchetproject.reflection.accessors;
 
 import org.apache.log4j.Logger;
 import org.hatchetproject.exceptions.InvocationException;
-import org.hatchetproject.reflection.meta.signatures.AccessorMeta;
 import org.hatchetproject.reflection.meta.signatures.FieldMeta;
-import org.hatchetproject.value_management.inject_default.AssignedParameters.Type;
 import org.hatchetproject.value_management.inject_default.ParametersBuilder;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
 public class FieldSetter extends AbstractAccessorExecutor implements Setter {
 

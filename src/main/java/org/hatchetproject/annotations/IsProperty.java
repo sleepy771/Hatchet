@@ -1,7 +1,7 @@
 package org.hatchetproject.annotations;
 
-import org.hatchetproject.reflection.constants.AsSelf;
 import org.hatchetproject.constants.UndefinedValueCast;
+import org.hatchetproject.reflection.constants.AsSelf;
 import org.hatchetproject.value_management.ValueCast;
 
 import java.lang.annotation.ElementType;

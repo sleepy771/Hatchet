@@ -1,7 +1,6 @@
 package org.hatchetproject.utils;
 
 import org.hatchetproject.annotations.IsProperty;
-import org.hatchetproject.reflection.meta.signatures.Signature;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

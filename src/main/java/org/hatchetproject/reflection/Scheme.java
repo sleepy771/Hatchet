@@ -1,7 +1,6 @@
 package org.hatchetproject.reflection;
 
 import org.hatchetproject.manager.memory.Releasable;
-import org.hatchetproject.reflection.accessors.CGConstructorSetter;
 import org.hatchetproject.reflection.accessors.AbstractConstructorSetter;
 import org.hatchetproject.reflection.accessors.property.PropertyGetter;
 import org.hatchetproject.reflection.accessors.property.PropertySetter;

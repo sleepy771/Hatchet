@@ -3,7 +3,6 @@ package org.hatchetproject.value_management.inject_default;
 import org.apache.commons.lang3.ArrayUtils;
 import org.hatchetproject.Builder;
 import org.hatchetproject.exceptions.BuilderException;
-import org.hatchetproject.exceptions.ParametersException;
 import org.hatchetproject.utils.HatchetCollectionsManipulation;
 
 import java.lang.reflect.Constructor;

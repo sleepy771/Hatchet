@@ -1,7 +1,6 @@
 package org.hatchetproject.reflection.accessors;
 
 import org.hatchetproject.reflection.meta.signatures.AccessorMeta;
-import org.hatchetproject.value_management.inject_default.ParametersBuilder;
 
 import java.util.List;
 

@@ -1,7 +1,5 @@
 package org.hatchetproject.value_management.inject_default;
 
-import org.hatchetproject.manager.DefaultAbstractManager;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;

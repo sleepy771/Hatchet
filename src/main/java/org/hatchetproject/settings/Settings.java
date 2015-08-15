@@ -1,7 +1,5 @@
 package org.hatchetproject.settings;
 
-import org.hatchetproject.TypeValueEntry;
-
 import java.io.Serializable;
 import java.util.Map;
 

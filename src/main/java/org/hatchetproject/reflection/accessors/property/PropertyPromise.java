@@ -3,7 +3,6 @@ package org.hatchetproject.reflection.accessors.property;
 import org.hatchetproject.exceptions.PropertyGetterException;
 import org.hatchetproject.reflection.accessors.ReadyListener;
 import org.hatchetproject.reflection.accessors.property.helpers.PropertyHelper;
-import org.hatchetproject.reflection.meta.signatures.PropertyMeta;
 
 public interface PropertyPromise<TYPE, RAW_TYPE> extends Promise<TYPE> {
     RAW_TYPE getRaw() throws PropertyGetterException, InterruptedException;

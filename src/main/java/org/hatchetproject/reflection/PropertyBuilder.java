@@ -1,31 +1,5 @@
 package org.hatchetproject.reflection;
 
-import org.apache.log4j.Logger;
-import org.hatchetproject.annotations.HasProperties;
-import org.hatchetproject.annotations.InjectValue;
-import org.hatchetproject.annotations.InjectValues;
-import org.hatchetproject.annotations.IsProperty;
-import org.hatchetproject.exceptions.ManagerException;
-import org.hatchetproject.exceptions.PropertyAccessorException;
-import org.hatchetproject.reflection.accessors.property.PropertyGetter;
-import org.hatchetproject.reflection.accessors.property.PropertySetter;
-import org.hatchetproject.reflection.constants.AsSelf;
-import org.hatchetproject.utils.HatchetInspectionUtils;
-import org.hatchetproject.value_management.RegistrableValue.ValueSignature;
-import org.hatchetproject.constants.UndefinedValueCast;
-import org.hatchetproject.value_management.ValueCast;
-import org.hatchetproject.value_management.ValueCastManager;
-import org.hatchetproject.value_management.ValueCastSignature;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class PropertyBuilder {
 
     // TODO need change

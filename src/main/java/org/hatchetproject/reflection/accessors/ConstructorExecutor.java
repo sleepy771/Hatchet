@@ -2,15 +2,12 @@ package org.hatchetproject.reflection.accessors;
 
 import com.sun.istack.internal.NotNull;
 import org.hatchetproject.exceptions.InvocationException;
-import org.hatchetproject.reflection.meta.signatures.AccessorMeta;
 import org.hatchetproject.reflection.meta.signatures.ConstructorMeta;
 import org.hatchetproject.value_management.inject_default.AssignedParameters.Type;
 import org.hatchetproject.value_management.inject_default.ParametersBuilder;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
-import java.util.Set;
 
 public abstract class ConstructorExecutor extends AbstractAccessorExecutor {
 
