@@ -106,8 +106,8 @@ public class FieldGetter implements Getter {
     }
 
     @Override
-    public Object invoke(Object destination) throws InvocationException {
-        return invoke(destination, EMPTY_ARRAY);
+    public Object invoke() throws InvocationException {
+        return invoke(getTarget(), EMPTY_ARRAY);
     }
 
     @Override

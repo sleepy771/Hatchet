@@ -35,18 +35,18 @@ public class HatchetInspectionUtils {
                 && method.getParameterCount() == 0;
     }
 
-    public static boolean isGetter(Signature signature) {
-        return (signature.getReturnType() != void.class || Void.class != signature.getReturnType())
-                && signature.getParametersCount() == 0;
-    }
+//    public static boolean isGetter(Signature signature) {
+//        return (signature.getReturnType() != void.class || Void.class != signature.getReturnType())
+//                && signature.getParametersCount() == 0;
+//    }
 
     public static boolean isSetter(Method method) {
         return method.getParameterCount() > 0;
     }
 
-    public static boolean isSetter(Signature signature) {
-        return signature.getParametersCount() > 0;
-    }
+//    public static boolean isSetter(Signature signature) {
+//        return signature.getParametersCount() > 0;
+//    }
 
     public static boolean isAccessibleGetter(Method method) {
         return isPublic(method) && isGetter(method);

@@ -15,9 +15,13 @@ public class MethodSetter extends MethodExecutor implements Setter {
     }
 
     @Override
+    protected void runWipe() {
+    }
+
+    @Override
     protected void update() {
         try {
-            invoke(getTarget());
+            invoke();
         } catch (InvocationException e) {
             LOGGER.error(e);
         }

@@ -76,7 +76,7 @@ public abstract class AbstractConstructorSetter extends AbstractAccessorExecutor
     @Override
     protected final void update() {
         try {
-            instance = invoke(null);
+            instance = invoke();
             exception = null;
         } catch (InvocationException e) {
             exception = e;
@@ -142,5 +142,23 @@ public abstract class AbstractConstructorSetter extends AbstractAccessorExecutor
             isComplete = true;
             constructorSetter.removeReadyListener(this);
         }
+    }
+
+    @Override
+    public final void setTarget(Object target) {
+        if (null == target) {
+            return;
+        }
+        throw new UnsupportedOperationException("Whis option is not available");
+    }
+
+    @Override
+    public final Object getTarget() {
+        return null;
+    }
+
+    @Override
+    public final boolean hasTarget() {
+        return true;
     }
 }

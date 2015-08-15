@@ -64,7 +64,7 @@ public class MethodGetter extends MethodExecutor implements Getter {
     @Override
     protected void update() {
         try {
-            this.result = invoke(getTarget());
+            this.result = invoke();
             this.exception = null;
         } catch (InvocationException e) {
             this.exception = e;

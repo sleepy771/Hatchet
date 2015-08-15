@@ -10,10 +10,7 @@ import org.hatchetproject.value_management.inject_default.ParametersBuilder;
 import java.lang.reflect.Field;
 import java.util.List;
 
-/**
- * Created by filip on 13.8.2015.
- */
-public class FieldSetter extends AbstractAccessorExecutor implements Setter, Targetable {
+public class FieldSetter extends AbstractAccessorExecutor implements Setter {
 
     private static final Logger LOGGER = Logger.getLogger(FieldSetter.class);
 
@@ -40,7 +37,7 @@ public class FieldSetter extends AbstractAccessorExecutor implements Setter, Tar
     @Override
     protected void update() {
         try {
-            invoke(getTarget());
+            invoke();
         } catch (InvocationException e) {
             LOGGER.error(e);
         }
@@ -74,6 +71,9 @@ public class FieldSetter extends AbstractAccessorExecutor implements Setter, Tar
     public void setTarget(Object target) {
         if (!field.getDeclaringClass().isInstance(target)) {
             throw new IllegalArgumentException("target is not instance of " + field.getDeclaringClass().getName());
+        }
+        if (this.target == target) {
+            return;
         }
         this.target = target;
         checkAssigned();

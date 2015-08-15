@@ -4,9 +4,9 @@ import org.hatchetproject.exceptions.ManagerException;
 import org.hatchetproject.manager.AbstractManager;
 import org.hatchetproject.value_management.RegistrableValue.ValueSignature;
 
-/**
- * Created by filip on 7/13/15.
- */
+import java.util.Map;
+
+
 public class ValueManager extends AbstractManager<RegistrableValue.ValueSignature, RegistrableValue> {
 
     private static ValueManager INSTANCE;
@@ -36,6 +36,11 @@ public class ValueManager extends AbstractManager<RegistrableValue.ValueSignatur
     @Override
     protected String verboseElement(RegistrableValue registrableValue) {
         return verboseKey(registrableValue.getSignature()) + " := " + registrableValue.getValue().toString();
+    }
+
+    @Override
+    protected void populate(Map<ValueSignature, RegistrableValue> originalMap) {
+
     }
 
     @Override

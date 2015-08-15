@@ -40,7 +40,7 @@ public final class CGConstructorSetter extends AbstractConstructorSetter {
                 MethodMeta meta = new MethodMeta(method);
                 if (setterMap.containsKey(meta)) {
                     try {
-                        return setterMap.get(meta).invoke(null);
+                        return setterMap.get(meta).invoke();
                     } catch (InvocationException e) {
                         return NoOp.INSTANCE;
                     }

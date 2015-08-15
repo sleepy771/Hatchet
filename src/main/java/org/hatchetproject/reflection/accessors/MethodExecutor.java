@@ -10,7 +10,7 @@ import org.hatchetproject.value_management.inject_default.ParametersBuilder;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public abstract class MethodExecutor extends AbstractAccessorExecutor implements Targetable {
+public abstract class MethodExecutor extends AbstractAccessorExecutor {
 
     private final Method method;
 
@@ -55,6 +55,9 @@ public abstract class MethodExecutor extends AbstractAccessorExecutor implements
     public final void setTarget(Object target) {
         if (null != target && !getBuilder().getDeclaringClass().isInstance(target)) {
             throw new IllegalArgumentException("Invalid instance");
+        }
+        if (target == this.target){
+            return;
         }
         this.runWipe();
         getBuilder().clear();

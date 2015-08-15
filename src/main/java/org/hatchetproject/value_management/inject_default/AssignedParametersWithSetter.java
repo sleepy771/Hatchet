@@ -13,11 +13,11 @@ public abstract class AssignedParametersWithSetter implements AssignedParameters
 
     protected abstract Object[] dirctlyAccessedValues();
 
-    protected Setter createSetter() throws NoSuchMethodException, NoSuchFieldException {
-        return getType().createSetter(getDeclaringClass(), getName(), getParamTypes());
-    }
+//    protected Setter createSetter() throws NoSuchMethodException, NoSuchFieldException {
+//        return getType().createSetter(getDeclaringClass(), getName(), getParamTypes());
+//    }
 
-    protected Object invokeSetter(Object object) throws NoSuchMethodException, NoSuchFieldException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        return createSetter().set(object, dirctlyAccessedValues());
-    }
+//    protected Object invokeSetter(Object object) throws NoSuchMethodException, NoSuchFieldException, IllegalAccessException, InvocationTargetException, InstantiationException {
+//        return createSetter().set(object, dirctlyAccessedValues());
+//    }
 }

@@ -49,4 +49,22 @@ public class ObjectLessMethodSetter extends AbstractAccessorExecutor implements 
     public Object invoke(Object object, Object[] values) throws InvocationException {
         return (FixedValue) () -> values[0];
     }
+
+    @Override
+    public void setTarget(Object target) {
+        if (null == target) {
+            return;
+        }
+        throw new UnsupportedOperationException("Can not assign target");
+    }
+
+    @Override
+    public Object getTarget() {
+        return null;
+    }
+
+    @Override
+    public boolean hasTarget() {
+        return true;
+    }
 }

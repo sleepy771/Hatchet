@@ -53,10 +53,10 @@ public abstract class AbstractAccessorExecutor implements AccessorExecutor {
     }
 
     @Override
-    public final Object invoke(Object destination) throws InvocationException {
+    public final Object invoke() throws InvocationException {
         try {
             AssignedParameters parameters = getParameters();
-            return this.invoke(destination, parameters.asArray());
+            return this.invoke(getTarget(), parameters.asArray());
         } catch (ParametersException e) {
             throw new InvocationException("Parameters are not assigned");
         }
@@ -66,7 +66,7 @@ public abstract class AbstractAccessorExecutor implements AccessorExecutor {
         try {
             return builder.build();
         } catch (org.hatchetproject.exceptions.BuilderException e) {
-            e.printStackTrace();
+            throw new ParametersException("Parameters can not be created", e);
         }
     }
 

@@ -5,8 +5,8 @@ import org.hatchetproject.exceptions.InvocationException;
 /**
  * Created by filip on 3.8.2015.
  */
-public interface Invokable extends ImmediatelyInvokable {
-    Object invoke(Object destination) throws InvocationException;
+public interface Invokable extends ImmediatelyInvokable, Targetable {
+    Object invoke() throws InvocationException;
 
     boolean isFilled();
 }
